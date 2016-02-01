@@ -1,0 +1,9 @@
+# ignore binaries
+fmipp/lib/*.pyd
+fmipp/lib/*.dll
+
+# ignore SWIG Python wrapper
+fmipp/fmippim.py
+
+# ignore pyc files
+*.pyc
