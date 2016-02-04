@@ -10,14 +10,15 @@ additional_files = [
   ]
 
 setup(
-  name =' fmipp',
+  name = 'fmipp',
   version = '0.1',
-  description = 'FMI++ Python Wrapper (Windows 32-bit)',
+  description = 'FMI++ Python Interface for Windows',
   long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI specification and the typical requirements of simulation tools.',
+  url = 'http://fmipp.sourceforge.net',
   author = 'Edmund Widl <edmund.widl@ait.ac.at>, \n\tWolfgang Mueller <wolfgang.mueller.fl@ait.ac.at>',
   maintainer = 'Edmund Widl',
   maintainer_email = 'edmund.widl@ait.ac.at',
-  license = 'BSD (see FMIPP_LICENSE.txt and SUNDIALS_LICENSE.txt)',
+  license = 'BSD license & BOOST software license',
   platforms = 'Windows',
   classifiers=[
     'Development Status :: 4 - Beta',

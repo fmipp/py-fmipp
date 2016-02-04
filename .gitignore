@@ -1,9 +1,15 @@
-# ignore binaries
+# Ignore binaries.
 fmipp/lib/*.pyd
 fmipp/lib/*.dll
 
-# ignore SWIG Python wrapper
-fmipp/fmippim.py
+# Ignore directories for building distributions.
+build
+dist
 
-# ignore pyc files
+# Ignore SWIG Python wrapper and other scripts from FMI++ ...
+fmipp/*.py
+# ... but do not ignore __init__.py
+!fmipp/__init__.py
+
+# Ignore pyc files.
 *.pyc
