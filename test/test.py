@@ -1,5 +1,5 @@
 import fmipp
-import os.path, sys, urlparse, urllib
+import os.path, urlparse, urllib
 
 # Retrieve current path.
 test_dir = os.path.dirname( os.path.abspath( __file__ ) )
