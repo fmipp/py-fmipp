@@ -1,30 +1,33 @@
+
 import fmipp
-import os.path, urlparse, urllib
+import os.path
 
-# Retrieve current path.
-test_dir = os.path.dirname( os.path.abspath( __file__ ) )
-test_dir_uri = urlparse.urljoin( 'file:', urllib.pathname2url( test_dir ) )
+work_dir = os.path.split( os.path.abspath( __file__ ) )[0] # define working directory
+model_name = 'zigzag' # define FMU model name
 
-eps_time = 1e-9
+path_to_fmu = os.path.join( work_dir, model_name + '.fmu' ) # path to FMU
+uri_to_extracted_fmu = fmipp.extractFMU( path_to_fmu, work_dir ) # extract FMU
 
-fmu = fmipp.FMUModelExchange( test_dir_uri + "/zigzag", "zigzag", False, False, eps_time )
-status = fmu.instantiate( "zigzag1" )
-assert status == fmipp.fmiOK
-status = fmu.setRealValue( "k", 1.0 )
-assert status == fmipp.fmiOK
-status = fmu.initialize()
-assert status == fmipp.fmiOK
+# create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
+logging_on = False
+stop_before_event = False
+event_search_precision = 1e-10
+fmu = fmipp.FMUModelExchangeV1( uri_to_extracted_fmu, model_name, logging_on, stop_before_event, event_search_precision )
+
+status = fmu.instantiate( "my_test_model_1" ) # instantiate model
+assert status == fmipp.fmiOK # check status
+
+status = fmu.setRealValue( 'k', 1.0 ) # set value of parameter 'k'
+assert status == fmipp.fmiOK # check status
+
+status = fmu.initialize() # initialize model
+assert status == fmipp.fmiOK # check status
 
 t = 0.0
-stepsize = 0.0025
-tstop = 1.0
+stepsize = 0.125
+tstop = 2.0
 
-while ( ( t + stepsize ) - tstop < eps_time ):
-  t = fmu.integrate( t + stepsize )
-  x = fmu.getRealValue( "x" )
-  assert abs( x - t ) < 1e-6
-
-t = fmu.getTime()
-assert abs( t - tstop ) < stepsize/2
-x = fmu.getRealValue( "x" )
-assert fmu.getLastStatus() == fmipp.fmiOK
+while ( ( t + stepsize ) - tstop < 1e-6 ):
+  t = fmu.integrate( t + stepsize ) # integrate model
+  x = fmu.getRealValue( "x" ) # retrieve output variable 'x'
+  print "t = {:2.3f} - x = {:2.3f}".format( t, x )
