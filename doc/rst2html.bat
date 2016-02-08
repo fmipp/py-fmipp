@@ -1,0 +1,1 @@
+python.exe D:\Python27\Scripts\rst2html.py --stylesheet=pygments-long.css,style.css doc.txt index.html

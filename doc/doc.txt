@@ -1,0 +1,350 @@
+============================================
+The FMI++ Python Interface for Windows
+============================================
+
+About
+===============
+
+The `Functional Mock-up Interface <https://fmi-standard.org/>`_ (FMI) specification intentionally provides only the most essential and fundamental functionalities in the form of a C interface.
+On the one hand, this increases flexibility in use and portability to virtually any platform.
+On the other hand, such a low-level approach implies several prerequisites a simulation tool has to fulfil in order to be able
+to utilize such an FMI component.
+
+The `FMI++ Python Interface <https://pypi.python.org/pypi?:action=display&name=fmipp>`_ is a Python wrapper for the `FMI++ Library <http://fmipp.sourceforge.net>`_, which intends to bridge the gap between the basic fuctionality provided by the FMI specification and the typical requirements of simulation tools.
+The FMI++ Library provides high-level functionalities that ease the handling and manipulation of FMUs, such as numerical integration, advanced event-handling or state predictions.
+This allows FMUs to be integrated more easily, e.g., into fixed time step or discrete event simulations.
+
+This package provides a stand-alone version of the Python interface for the `FMI++ Library <http://fmipp.sourceforge.net>`_ for Windows.
+For other operating systems, this package can be built from `source <http://sourceforge.net/p/fmipp/code/ci/master/tree/>`_.
+
+
+Dependencies
+===============
+
+In order to provide a reliable, stable and portable solution, the FMI++ Library relies on other state-of-the-art tools where necessary.
+Especially, it depends upon
+
+- the `Boost library <http://www.boost.org/>`_ (especially the `ODEINT library <http://www.odeint.com/>`_) and 
+- the `SUNDIALS <https://computation.llnl.gov/casc/sundials/>`_ numerical integrator package.
+
+Details on the licenses of the FMI++ Library, Boost and SUNDIALS can be retrieved via:
+
+.. code:: Python
+
+  import fmipp
+  fmipp.licenseInfo()
+
+
+Example Usage
+===============
+
+The `FMI++ Python Interface <https://pypi.python.org/pypi?:action=display&name=fmipp>`_ provides several classes that allow to manipulate FMUs for ModelExchange and for Co-Simulation.
+In the following, short descriptions and code snippets of the provided functionality demonstrate their usage.
+More extensive background information can be found in the documentation of the `FMI++ Library <http://fmipp.sourceforge.net>`_.
+
+Loading the library and extracting an FMU
+------------------------------------------
+
+FMUs are basically ZIP archives.
+To load the library and extract an FMU for further processing do something like this:
+
+.. code:: Python
+
+  import fmipp
+
+  work_dir = 'C:\\path\\to\\my\\work\\dir' # define working directory (contains the FMU)
+  model_name = 'MyTestModel' # define FMU model name
+  path_to_fmu = os.path.join( work_dir, model_name + '.fmu' ) # path to FMU
+
+  uri_to_extracted_fmu = fmipp.extractFMU( path_to_fmu, work_dir ) # extract FMU
+
+The last line not only extracts the FMU, but also return an URI to the extracted FMU's location.
+Since all constructors of the the FMI++ Library take URIs to extracted FMUs as input arguments, this function comes in very handy.
+
+
+Classes FMUModelExchangeV1 and FMUModelExchangeV2
+--------------------------------------------------
+
+The most obvious obstacle for using a bare FMU for ModelExchange is its lack of an integrator.
+For this reason, classes ``FMUModelExchangeV1`` and ``FMUModelExchangeV2`` provide generic methods for the integration of FMUs for ModelExchange for FMI Version 1.0 and 2.0, respectively.
+Instances of these classes own the actual FMU instance and are able to advance the current state up to a specified point in time, including the
+proper handling of FMU-internal events.
+The classes also provide functionality for convenient input and output handling.
+
+The following example demonstrates the basic usage of class ``FMUModelExchangeV1`` (usage of class ``FMUModelExchangeV2`` is analogous):
+
+.. code:: Python
+
+  # create FMI++ wrapper for FMU for ModelExchange (Version 1.0)
+  logging_on = False
+  stop_before_event = False
+  event_search_precision = 1e-10
+  integrator_type = fmipp.bdf
+  fmu = fmipp.FMUModelExchangeV1( uri_to_extracted_fmu, model_name, logging_on, stop_before_event, event_search_precision, integrator_type )
+
+  status = fmu.instantiate( "my_test_model_1" ) # instantiate model
+  assert status == fmipp.fmiOK # check status
+
+  status = fmu.setRealValue( 'k', 1.0 ) # set value of parameter 'k'
+  assert status == fmipp.fmiOK # check status
+
+  status = fmu.initialize() # initialize model
+  assert status == fmipp.fmiOK # check status
+
+  t = 0.0
+  stepsize = 0.125
+  tstop = 3.0
+
+  while ( ( t + stepsize ) - tstop < 1e-6 ):
+    t = fmu.integrate( t + stepsize ) # integrate model
+    x = fmu.getRealValue( "x" ) # retrieve output variable 'x'
+	
+The integration algorithms provided by ODEINT and SUNDIALS can be chosen with an appropriate flag in the constructor (see example above).
+The following algorithms are available:
+
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| Stepper | Name                             | Suite    | Order | Adaptive | Recommended usecases                           |
++=========+==================================+==========+=======+==========+================================================+
+| eu      | Explicit Euler                   | ODEINT   | 1     | No       | Testing                                        |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| rk      | 4th order Runge-Kutta            | ODEINT   | 4     | No       | Testing                                        |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| abm     | Adams-Bashforth-Moulton          | ODEINT   | 8     | No       | Testing                                        |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| ck      | Cash-Karp                        | ODEINT   | 5     | Yes      | Nonstiff Models                                |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| dp      | Dormand-Prince                   | ODEINT   | 5     | Yes      | Nonstiff Models                                |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| fe      | Fehlberg                         | ODEINT   | 8     | Yes      | Nonstiff, smooth Models                        |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| bs      | Bulirsch Stoer                   | ODEINT   | 1-16  | Yes      | High precision required                        |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| ro      | Rosenbrock                       | ODEINT   | 4     | Yes      | Stiff Models                                   |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| bdf     | Backward Differentiation Formula | SUNDIALS | 1-5   | Yes      | Stiff Models                                   |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+| abm2    | Adams-Bashforth-Moulton          | SUNDIALS | 1-12  | Yes      | Nonstiff Models with expensive right hand side |
++---------+----------------------------------+----------+-------+----------+------------------------------------------------+
+
+
+Class FMUCoSimulation
+-------------------------
+
+Class ``FMUCoSimulation`` offers a set of convenient functionalities for accessing and manipulating FMUs for Co-Simulation (currently only FMI Version 1.0).
+
+The following example demonstrates the basic usage of class ``FMUCoSimulation``:
+
+.. code:: Python
+
+  logging_on = False
+  time_diff_resolution = 1e-9
+  fmu = fmipp.FMUCoSimulation( uri_to_extracted_fmu, model_name, logging_on, time_diff_resolution )
+
+  start_time = 0.
+  stop_time = 10.
+
+  instance_name = "sine_standalone1"
+  visible = False
+  interactive = False
+  status = fmu.instantiate( instance_name, start_time, visible, interactive )
+  assert status == fmipp.fmiOK
+    
+  status = fmu.setRealValue( 'omega', 6.28318531 )
+  assert status == fmipp.fmiOK
+
+  stop_time_defined = True
+  status = fmu.initialize( start_time, stop_time_defined, stop_time )
+  assert status == fmipp.fmiOK
+
+  time = 0.
+  step_size = 1.
+
+  while ( ( time + step_size ) - stop_time < time_diff_resolution ):
+    # Make co-simulation step.
+    new_step = True
+    status = fmu.doStep( time, step_size, new_step )
+    assert status == fmipp.fmiOK
+
+    # Advance time.
+    time += step_size
+
+	# Retrieve result.
+    x = fmu.getRealValue( 'x' )
+    assert fmu.getLastStatus() == fmipp.fmiOK
+
+
+Class IncrementalFMU
+-----------------------
+
+The class ``IncrementalFMU`` offers the possibility to combine the basic ability to integrate the state of an FMU for ModelExchange (FMI Version 1.0 and 2.0) with advanced event handling capabilities.
+It implements a lookahead mechanism, where predictions of the FMU’s state are incrementally computed and stored and the occurence of future events can be predicted (within a certain time horizon).
+This functionality is especially useful when utilizing the FMUs in event-base simulations.
+For more details please refer to the documentation of the `FMI++ Library <http://fmipp.sourceforge.net>`_ or to `this plublication <http://dx.doi.org/10.1109/MSCPES.2015.7115397>`_.
+
+The following example demonstrates the basic usage of class ``IncrementalFMU``:
+
+.. code:: Python
+
+  # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
+  logging_on = False
+  event_search_precision = 1e-7
+  integrator_type = fmipp.rk
+  fmu = fmipp.IncrementalFMU( uri_to_extracted_fmu, model_name, logging_on, event_search_precision, integrator_type )
+
+  # number of parameters that should be initialized
+  n_init = 2
+
+  # construct string array for init parameter names
+  init_vars = fmipp.new_string_array( n_init )
+  fmipp.string_array_setitem( init_vars, 0, 'k' )
+  fmipp.string_array_setitem( init_vars, 1, 'x' )
+
+  # construct string array for initial parameter values
+  init_vals = fmipp.new_double_array( n_init )
+  fmipp.double_array_setitem( init_vals, 0, 1.0 )
+  fmipp.double_array_setitem( init_vals, 1, 0.0 )
+
+  # define number of real outputs
+  n_real_outputs = 1
+
+  # construct string array with output names
+  outputs = fmipp.new_string_array( n_real_outputs )
+  fmipp.string_array_setitem( outputs, 0, 'x' )
+
+  # define real outputs
+  fmu.defineRealOutputs( outputs, n_real_outputs )
+
+  start_time = 0.0
+  stop_time = 5.0
+  step_size = 0.3
+  horizon = 2*step_size
+  int_step_size = step_size/2
+
+  status = fmu.init( 'zigzag1', init_vars, init_vals, n_init, start_time, horizon, step_size, int_step_size ) # initialize model
+  assert status == 1 # check status
+
+  time = start_time
+  next = start_time
+
+  while ( time + step_size - stop_time  < 1e-6 ):
+    oldnext = next
+    next = fmu.sync( time, min( time + step_size, next ) )
+    result = fmu.getRealOutputs()
+    time = min( time + step_size, oldnext )
+    x = fmipp.double_array_getitem( result, 0 )
+    print "t = {:1.2f} - x = {:1.2f}".format( time, x )
+
+At construction time, class ``IncrementalFMU`` allows to initialize a list of parameters.
+Furthermore, it allows to define input and output parameters for each synchronization.
+The corresponding parameters are treated as special arrays and need to be handled with the help of specialized function calls (``new_double_array(...)``, ``double_array_setitem(...)``, etc.).
+
+
+Classes FixedStepSizeFMU and InterpolatingFixedStepSizeFMU
+--------------------------------------------------------------
+
+Classes ``FixedStepSizeFMU`` and ``InterpolatingFixedStepSizeFMU`` ease the use of FMUs for Co-Simulation (currently only FMI Version 1.0) that enforce a fixed time
+step, i.e., FMU communication intervals with a fixed length.
+The handling is very similar to class ``IncrementalFMU``, i.e., it defines the methods ``defineRealInputs``, ``defineRealOutputs``,
+``getRealOutputs``, etc. in an analogous way.
+However, ``sync`` always returns the time of the next FMU communication point. 
+
+Whenever calling ``sync`` for a ``FixedStepSizeFMU``, the internal state according to the FMU's latest communication point will be used for retrieving outputs, i.e., it implements a zero-order hold. 
+In contrast, class ``InterpolatingFixedStepSizeFMU`` linearly interpolates the outputs according to the FMU's internal state at the previous and the forthcoming communication point.
+
+Whenever an FMU communication point is reached, the latest inputs are handed to the FMU.
+This means, that multiple calls of sync between two FMU communication points with different inputs will only cause the latest input to be handed to the FMU (no queueing).
+
+The following example demonstrates the basic usage of class ``FixedStepSizeFMU``:
+
+.. code:: Python
+
+  logging_on = False
+  fmu = fmipp.FixedStepSizeFMU( uri_to_extracted_fmu, model_name, logging_on )
+
+  # number of parameter to be initialzed
+  n_init = 1
+
+  # construct string array for init parameter names
+  init_vars = fmipp.new_string_array( n_init )
+  fmipp.string_array_setitem( init_vars, 0, 'omega' )
+
+  # construct double array for init parameter values
+  init_vals = fmipp.new_double_array( n_init )
+  fmipp.double_array_setitem( init_vals, 0, 0.1 * math.pi )
+
+  # number of outputs
+  n_outputs = 1
+
+  # construct string array with output names
+  outputs = fmipp.new_string_array( n_outputs )
+  fmipp.string_array_setitem( outputs, 0, 'x' )
+
+  # define real output names
+  fmu.defineRealOutputs( outputs, n_outputs );
+
+  start_time = 0.
+  stop_time = 5.
+  fmu_step_size = 1. # fixed step size enforced by FMU
+  sim_step_size = 0.2 # step size of simulation
+  time = start_time
+
+  status = fmu.init( "test_sine", init_vars, init_vals, n_init, start_time, fmu_step_size )
+  assert status == 1
+
+  while ( time <= stop_time ):
+    fmu.sync( time, time + sim_step_size )
+    time += sim_step_size
+    result = fmu.getRealOutputs()
+
+
+Class RollbackFMU
+---------------------
+
+Class ``RollbackFMU`` implements an easy way to reset the state of a given FMU for ModelExchange (FMI Version 1.0 and 2.0) to a state according to a previous time step.
+
+Assume that at time ``t0`` the function call ``integrate( t1 )`` was issued, i.e., the integration of the associated FMU from time ``t0`` to time ``t1 > t0``.
+In case there happend no event during the integration, after the function call the internal state of the FMU corresponds to time ``t1``.
+Now, in order to rollback the FMU to a state corresponding to time ``t2``, with ``t0 < t2 < t1``, the function call ``integrate( t2 )`` is sufficient.
+Internally, class ``RollbackFMU`` stores a rollback state.
+No rollbacks corresponding to a time previous to that internally stored rollback state are possible.
+If not otherwise instructed, the latest stored rollback state is overwritten with the current state, in case the integration endpoint is in the
+future.
+However, the method ``saveCurrentStateForRollback`` enforces the current state to be stored as rollback state until it is explicitly released with method ``releaseRollbackState``.
+This allows to make a rollback over more than one time-consecutive integration cycle.
+
+The following example demonstrates the basic usage of class ``RollbackFMU``:
+
+.. code:: Python
+
+  logging_on = False
+  fmu = fmipp.RollbackFMU( uri_to_extracted_fmu, model_name )
+
+  instance_name = 'zigzag1'
+  status = fmu.instantiate( instance_name )
+  assert status == fmipp.fmiOK
+
+  status = fmu.setRealValue( 'k', 1.0 )
+  assert status == fmipp.fmiOK
+
+  status = fmu.initialize()
+  assert status == fmipp.fmiOK
+
+  time = 0.0 
+  step_size = 0.025
+  stop_time = 0.5
+  x = -1.0
+
+  while ( ( time + step_size ) - stop_time < 1e-6 ):
+    # Make integration step.
+    fmu.integrate( time + step_size )
+
+    # Enforce rollback.
+    fmu.integrate( time + 0.5*step_size )
+    time = fmu.integrate( time + step_size )
+    x = fmu.getRealValue( 'x' )
+
+Version History
+================
+
+ - Version 1.0: first release
+ - Version 1.1: added online documentation, bug fixes
