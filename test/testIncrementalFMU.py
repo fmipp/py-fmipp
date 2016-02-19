@@ -7,11 +7,13 @@ model_name = 'zigzag' # define FMU model name
 
 path_to_fmu = os.path.join( work_dir, model_name + '.fmu' ) # path to FMU
 uri_to_extracted_fmu = fmipp.extractFMU( path_to_fmu, work_dir ) # extract FMU
+print( path_to_fmu )
+print( uri_to_extracted_fmu )
 
 # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
 logging_on = False
 event_search_precision = 1e-7
-integrator_type = fmipp.rk
+integrator_type = fmipp.bdf
 fmu = fmipp.IncrementalFMU( uri_to_extracted_fmu, model_name, logging_on, event_search_precision, integrator_type )
 
 # number of parameters that should be initialized
@@ -54,5 +56,5 @@ while ( time + step_size - stop_time  < 1e-6 ):
   next = fmu.sync( time, min( time + step_size, next ) )
   result = fmu.getRealOutputs()
   time = min( time + step_size, oldnext )
-  print "t = {:1.2f} - x = {:1.2f}".format( time, fmipp.double_array_getitem( result, 0 ) )
+  print( "t = {:1.2f} - x = {:1.2f}".format( time, fmipp.double_array_getitem( result, 0 ) ) )
 

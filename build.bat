@@ -1,16 +1,22 @@
 @ECHO OFF
 
 REM Define path to directory with compiled SWIG Python wrapper for FMI++ import library (Release mode).
-SET FMIPPIM_SWIG_DIR=D:\Development\fmipp\msvc\import\swig
+REM SET FMIPPIM_SWIG_DIR=D:\Development\fmipp\msvc\import\swig
+SET FMIPPIM_SWIG_DIR=D:\Development\fmipp\msvc-py3\import\swig
 
 REM Define path to directory with compiled FMI++ import library (Release mode).
-SET FMIPPIM_DLL_DIR=D:\Development\fmipp\msvc\Release
+REM SET FMIPPIM_DLL_DIR=D:\Development\fmipp\msvc\Release
+SET FMIPPIM_DLL_DIR=D:\Development\fmipp\msvc-py3\Release
 
 REM Define path to directory with compiled SUNDIALS libraries.
 SET SUNDIALS_LIB_DIR=D:\Tools\sundials-2.5.0\lib32_msvc-10.0
 
 REM Define path to directory with additional FMI++ Python scripts.
 SET FMIPP_SCRIPTS_DIR=D:\Development\fmipp\scripts
+
+REM Define which Python version to use.
+REM SET PYTHON_EXE=python.exe
+SET PYTHON_EXE=D:\Python35-32\python.exe
 
 REM ##################################################################################################
 REM ##################################################################################################
@@ -35,7 +41,7 @@ REM Copy additional Python scripts from FMI++.
 XCOPY /y /v "%FMIPP_SCRIPTS_DIR%\*.py" "%PY_FMIPP_DIR%"
 
 REM Create self-installer for FMI++ Python Interface.
-python.exe "%~DP0\setup.py" bdist_wininst --no-target-compile --no-target-optimize --title "FMI++ Python Interface for Windows" --bitmap logo\logo_py_fmipp.bmp
+%PYTHON_EXE% "%~DP0\setup.py" bdist_wininst --no-target-compile --no-target-optimize --title "FMI++ Python Interface for Windows" --bitmap logo\logo_py_fmipp.bmp
 
 REM Clean up.
 REM RD /S build

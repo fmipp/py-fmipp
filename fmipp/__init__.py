@@ -13,9 +13,6 @@ install_dir = os.path.dirname( os.path.abspath( __file__ ) )
 # Add directory containing the SWIG modules and external libraries.
 sys.path.append( os.path.join( install_dir, "lib" ) ) 
 
-# Import the FMI++ wrapper.
-from fmippim import *
-
 # Import additional FMI++ scripts.
 scripts = glob.glob( os.path.join( install_dir, "*.py" ) )
 for s in scripts:
@@ -23,24 +20,17 @@ for s in scripts:
 	path, fname = os.path.split( s )
 	mname, ext = os.path.splitext( fname )
 
-	if mname not in [ '__init__', 'fmippim' ]:
+	if mname not in [ '__init__' ]:
 		no_ext = os.path.join( path, mname )
 		#print no_ext
 
-		if os.path.exists( no_ext + '.pyc' ):
-			try:
-				imp.load_compiled( 'fmipp', no_ext + '.pyc' )
-				#print 'successfully loaded module %s' % mname
-			except:
-				print 'failed loading compiled module %s' % mname
-				print sys.exc_info()[0]
-		elif os.path.exists( no_ext + '.py' ):
+		if os.path.exists( no_ext + '.py' ):
 			try:
 				imp.load_source( 'fmipp', no_ext + '.py' )
 				#print 'successfully loaded module %s' % mname
 			except:
-				print 'failed loading module %s' % mname
-				print sys.exc_info()[0]
+				print( 'failed loading module %s' % mname )
+				print( sys.exc_info()[0] )
 
 
 # Extra info regarding licenses.
@@ -53,4 +43,4 @@ def licenseInfo():
 	width = 65
 	full_info = '\n{}\n\n{}\n\n{}\n'.format( textwrap.fill( info1, width ), textwrap.fill( info2, width ), install_dir )
 	
-	print full_info
+	print( full_info )

@@ -35,6 +35,7 @@ setup(
 	'Operating System :: Microsoft :: Windows',
 	'Topic :: Scientific/Engineering',
 	'Programming Language :: Python :: 2.7',
+	'Programming Language :: Python :: 3.5',
 	'Programming Language :: C++',
 	],
   packages = [ 'fmipp' ],

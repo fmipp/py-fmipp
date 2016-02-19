@@ -31,4 +31,4 @@ tstop = 3.0
 while ( ( t + stepsize ) - tstop < 1e-6 ):
   t = fmu.integrate( t + stepsize ) # integrate model
   x = fmu.getRealValue( "x" ) # retrieve output variable 'x'
-  print "t = {:2.3f} - x = {:2.3f}".format( t, x )
+  print( "t = {:2.3f} - x = {:2.3f}".format( t, x ) )
