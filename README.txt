@@ -7,8 +7,7 @@ About
 
 The `Functional Mock-up Interface <https://fmi-standard.org/>`_ (FMI) specification intentionally provides only the most essential and fundamental functionalities in the form of a C interface.
 On the one hand, this increases flexibility in use and portability to virtually any platform.
-On the other hand, such a low-level approach implies several prerequisites a simulation tool has to fulfil in order to be able
-to utilize such an FMI component.
+On the other hand, such a low-level approach implies several prerequisites a simulation tool has to fulfil in order to be able to utilize such an FMI component.
 
 The `FMI++ Python Interface <https://pypi.python.org/pypi?:action=display&name=fmipp>`_ is a Python wrapper for the `FMI++ Library <http://fmipp.sourceforge.net>`_, which intends to bridge the gap between the basic fuctionality provided by the FMI specification and the typical requirements of simulation tools.
 The FMI++ Library provides high-level functionalities that ease the handling and manipulation of FMUs, such as numerical integration, advanced event-handling or state predictions.
