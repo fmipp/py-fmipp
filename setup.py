@@ -8,6 +8,7 @@ pyfmipp_additional_files = [
   'lib/sundials_cvode.dll',
   'lib/sundials_nvecserial.dll',
   'licenses/FMIPP_LICENSE.txt',
+  'licenses/BOOST_SOFTWARE_LICENSE.txt',
   'licenses/SUNDIALS_LICENSE.txt',
   ]
 
@@ -19,7 +20,7 @@ with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
 # Specify the setup of this package.
 setup(
   name = 'fmipp',
-  version = '1.1',
+  version = '1.2',
   description = 'FMI++ Python Interface for Windows',
   #long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI specification and the typical requirements of simulation tools.',
   long_description = pyfmipp_long_description,
