@@ -4,12 +4,16 @@ from distutils.core import setup
 # List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
 pyfmipp_additional_files = [
   'lib/_fmippim.pyd',
+  'lib/_fmippex.pyd',
   'lib/fmippim.dll',
+  'lib/fmippex.dll',
   'lib/sundials_cvode.dll',
   'lib/sundials_nvecserial.dll',
   'licenses/FMIPP_LICENSE.txt',
   'licenses/BOOST_SOFTWARE_LICENSE.txt',
   'licenses/SUNDIALS_LICENSE.txt',
+  'export/bin/fmi2.dll',
+  'export/bin/libfmipp_fmu_frontend.lib',
   ]
 
   
@@ -39,5 +43,5 @@ setup(
 	'Programming Language :: C++',
 	],
   packages = [ 'fmipp', 'fmipp.export' ],
-  #package_data = { 'fmipp': pyfmipp_additional_files },
+  package_data = { 'fmipp': pyfmipp_additional_files },
   )
