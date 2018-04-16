@@ -8,9 +8,8 @@ build
 dist
 
 # Ignore SWIG Python wrapper and other scripts from FMI++ ...
-fmipp/*.py
-# ... but do not ignore __init__.py
-!fmipp/__init__.py
+fmipp/fmippim.py
+fmipp/export/fmippex.py
 
 # Ignore pyc files.
 *.pyc

@@ -19,6 +19,8 @@ For other operating systems, this package can be built from `source <http://sour
 Dependencies
 ===============
 
+Compile and copy all required libraries and Python wrappers from FMI++ library.
+
 In order to provide a reliable, stable and portable solution, the FMI++ Library relies on other state-of-the-art tools where necessary. Especially, it depends upon
 
 - the `Boost library <http://www.boost.org/>`_ (especially the `ODEINT library <http://www.odeint.com/>`_) and 
@@ -31,6 +33,16 @@ Details on the licenses of the FMI++ Library, Boost and SUNDIALS can be retrieve
   import fmipp
   fmipp.licenseInfo()
 
+
+Installation from source
+===============
+
+Compile and copy all requried libraries and Python wrappers from FMI++ library.
+
+Then, run the following command:
+```
+> python setup.py install
+```
 
 Documentation
 ===============
