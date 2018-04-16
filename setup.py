@@ -20,7 +20,7 @@ with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
 # Specify the setup of this package.
 setup(
   name = 'fmipp',
-  version = '1.2',
+  version = '1.3',
   description = 'FMI++ Python Interface for Windows',
   #long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI specification and the typical requirements of simulation tools.',
   long_description = pyfmipp_long_description,
@@ -35,10 +35,9 @@ setup(
 	'Intended Audience :: Science/Research',
 	'Operating System :: Microsoft :: Windows',
 	'Topic :: Scientific/Engineering',
-	'Programming Language :: Python :: 2.7',
 	'Programming Language :: Python :: 3.5',
 	'Programming Language :: C++',
 	],
-  packages = [ 'fmipp' ],
-  package_data = { 'fmipp': pyfmipp_additional_files },
+  packages = [ 'fmipp', 'fmipp.export' ],
+  #package_data = { 'fmipp': pyfmipp_additional_files },
   )

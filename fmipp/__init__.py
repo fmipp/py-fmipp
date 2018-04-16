@@ -22,7 +22,6 @@ for s in scripts:
 
 	if mname not in [ '__init__' ]:
 		no_ext = os.path.join( path, mname )
-		#print no_ext
 
 		if os.path.exists( no_ext + '.py' ):
 			try:

@@ -1,6 +1,7 @@
 # Ignore binaries.
-fmipp/lib/*.pyd
-fmipp/lib/*.dll
+*.pyd
+*.dll
+*.lib
 
 # Ignore directories for building distributions.
 build
