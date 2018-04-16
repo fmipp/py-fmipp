@@ -169,7 +169,7 @@ def inspectFMUBackend( fmu_backend, verbose, modules ):
                 for var in vars:
                     modules.log( '\t{0} ({1})'.format( var, type ) )
 
-                    fmi_parameters[ 'Real' ] = backend._realParameterNames
+        fmi_parameters[ 'Real' ] = backend._realParameterNames
         fmi_parameters[ 'Integer' ] = backend._integerParameterNames
         fmi_parameters[ 'Boolean' ] = backend._booleanParameterNames
         fmi_parameters[ 'String' ] = backend._stringParameterNames
