@@ -6,11 +6,11 @@
 # Extract an FMU.
 def extractFMU( fmuFilePath, outputDirPath, command = None ):
     '''Extract an FMU to a folder.
-    
+
     fmuFilePath -- path to the FMU file (string)
     outputDirPath -- folder to which the FMU should be extracted (string)
     command (optional) -- specify the command to unzip the FMU (string)
-    
+
     The command for unzipping should be given as a string, using tags '{fmu}'
     and '{dir}' as placeholders for the FMU file path and the output directory.
     For instance:
@@ -34,7 +34,7 @@ def extractFMU( fmuFilePath, outputDirPath, command = None ):
 		fmuFileName = os.path.split( fmuFilePath )[1];
 		# Split FMU file name (name & extension).
 		fmuSplitFileName = os.path.splitext( fmuFileName )
-		
+
 		# Check if this is a valid FMU file name.
 		if '.fmu' != fmuSplitFileName[1]:
 			print( '%s is not a valid FMU file name' % fmuFileName )
@@ -49,17 +49,18 @@ def extractFMU( fmuFilePath, outputDirPath, command = None ):
 		except OSError: # Directory already exists
 			print( 'directory already exists: %s' % extractDirPath )
 
-        if command is None:
-            # Access FMU.
-            fmu = zipfile.ZipFile( fmuFilePath, 'r' )
 
-            # Extract FMU to output directory.
-            fmu.extractall( extractDirPath )
-        else:
-            os.system( command.format( fmu = fmuFilePath, dir = extractDirPath ) )
-		
+		if command is None:
+			# Access FMU.
+			fmu = zipfile.ZipFile( fmuFilePath, 'r' )
+
+			# Extract FMU to output directory.
+			fmu.extractall( extractDirPath )
+		else:
+			os.system( command.format( fmu = fmuFilePath, dir = extractDirPath ) )
+
 		# Return URI to extracted FMU.
-		return urllib.parse.urljoin( 'file:', urllib.request.pathname2url( extractDirPath ) ) 
+		return urllib.parse.urljoin( 'file:', urllib.request.pathname2url( extractDirPath ) )
 	except:
 		print( 'failed to extract file: %s' % fmuFilePath )
 
