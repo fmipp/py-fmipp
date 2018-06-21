@@ -5,18 +5,18 @@
 
 # Extract an FMU.
 def extractFMU( fmuFilePath, outputDirPath, command = None ):
-    '''Extract an FMU to a folder.
+	'''Extract an FMU to a folder.
 
-    fmuFilePath -- path to the FMU file (string)
-    outputDirPath -- folder to which the FMU should be extracted (string)
-    command (optional) -- specify the command to unzip the FMU (string)
+	fmuFilePath -- path to the FMU file (string)
+	outputDirPath -- folder to which the FMU should be extracted (string)
+	command (optional) -- specify the command to unzip the FMU (string)
 
-    The command for unzipping should be given as a string, using tags '{fmu}'
-    and '{dir}' as placeholders for the FMU file path and the output directory.
-    For instance:
-      - unzip: 'unzip {fmu} -d {dir}'
-      - 7-zip: '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
-    '''
+	The command for unzipping should be given as a string, using tags '{fmu}'
+	and '{dir}' as placeholders for the FMU file path and the output directory.
+	For instance:
+	  - unzip: 'unzip {fmu} -d {dir}'
+	  - 7-zip: '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
+	'''
 	import os, zipfile, urllib.parse, urllib.request
 
 	# Check if specified file is indeed a zip file.
