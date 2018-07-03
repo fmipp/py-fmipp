@@ -46,12 +46,12 @@ Alternatively ``--only-binary :all:`` can be used instead to force installing fr
 Installation on Linux
 ---------------------
 
-* make sure to have installed the following prerequisites(e.g. via ``apt-get``)
+* make sure to have installed the following prerequisites(e.g. via ``apt-get``, see package names in brackets below)
 
     * python (python-dev) (recommended: version 3.5 (or higher))
     * pip (python-pip)
     * swig (swig)
-    * SUNDIALS (libsundials-serial-dev)
+    * SUNDIALS (libsundials-dev or libsundials-serial-dev)
     * Boost (libboost-all-dev)
 
 * use ``pip`` to install FMI++ from the PyPI via source distribution::
