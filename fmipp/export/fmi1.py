@@ -5,7 +5,7 @@
 #
 # Collection of helper functions for creating FMU CS according to FMI 1.0
 #
-
+import platform
 
 # Get templates for the XML model description depending on the FMI version.
 def fmi1GetModelDescriptionTemplates( verbose, modules ):
@@ -68,8 +68,13 @@ def fmi1AddOptionalFilesToModelDescription( optional_files, header, footer, verb
 
 # Create DLL for FMU.
 def fmi1CreateSharedLibrary( fmi_model_identifier, verbose, modules ):
-    # Define name of shared library.
-    fmu_shared_library_name = fmi_model_identifier + '.dll'
+    # Define name of shared library based on platform.
+    if platform.system()=='Linux':
+      fmu_shared_library_name = fmi_model_identifier + '.so'
+    elif platform.system()=='Windows':
+      fmu_shared_library_name = fmi_model_identifier + '.dll'
+    else: #platform.system()=='Darwin'
+      fmu_shared_library_name = fmi_model_identifier + '.dylib'
 
     # Check if batch file for build process exists.
     build_process_batch_file = modules.os.path.join( modules.os.path.dirname( __file__ ), 'scripts', 'fmi1_build.bat' )

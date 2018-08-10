@@ -5,7 +5,7 @@
 #
 # Collection of helper functions for creating FMU CS according to FMI 2.0
 #
-
+import platform#, os, os.path
 
 # Get templates for the XML model description depending on the FMI version.
 def fmi2GetModelDescriptionTemplates( verbose, modules ):
@@ -68,10 +68,23 @@ def fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verb
 
 # Create DLL for FMU.
 def fmi2CreateSharedLibrary( fmi_model_identifier, verbose, modules ):
-    # Define name of shared library.
-    fmu_shared_library_name = fmi_model_identifier + '.dll'
 
-    fmi2_dll_path = modules.os.path.join( modules.os.path.dirname( __file__ ), 'bin', 'fmi2.dll' )
+    #check platform Shared Library Ending
+    if platform.system()=='Linux':
+      file_ending = '.so'
+    elif platform.system()=='Windows':
+      file_ending = '.dll'
+    else: #platform.system()=='Darwin'
+      file_ending = '.dylib'
+
+    # Define name of shared library based on platform.
+    fmu_shared_library_name = fmi_model_identifier + file_ending 
+
+    for file in modules.os.listdir(modules.os.path.join(modules.os.path.dirname(__file__), 'bin')):
+      if ((file.startswith('libfmi2.') or file.startswith('fmi2.')) and file.endswith(file_ending)):
+        fmi2_dll_path = modules.os.path.join( modules.os.path.dirname( __file__ ), 'bin', file)
+
+
     if ( False == modules.os.path.isfile( fmi2_dll_path ) ):
         raise RuntimeError( '\n[ERROR] DLL not found: {}'.format( fmi2_dll_path ) )
     modules.shutil.copy( fmi2_dll_path, fmu_shared_library_name )

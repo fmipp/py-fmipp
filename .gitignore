@@ -2,10 +2,13 @@
 *.pyd
 *.dll
 *.lib
+*.so
 
 # Ignore directories for building distributions.
 build
 dist
+source/fmipp
+MANIFEST
 
 # Ignore SWIG Python wrapper and other scripts from FMI++ ...
 fmipp/fmippim.py
