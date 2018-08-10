@@ -223,7 +223,7 @@ def generateFMU(
         modules.shutil.rmtree( fmi_model_identifier, False )
 
     # Working directory path for the FMU DLL.
-    binaries_dir = modules.os.path.join( fmi_model_identifier, 'binaries', 'win32' )
+    binaries_dir = modules.os.path.join( fmi_model_identifier, 'binaries', 'win64' )
 
     # Create working directory (incl. sub-directories) for FMU creation.
     modules.os.makedirs( binaries_dir )

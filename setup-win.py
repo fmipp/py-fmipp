@@ -1,4 +1,10 @@
-from distutils.core import setup
+import os
+from setuptools import setup
+from setuptools.dist import Distribution
+
+class BinaryDistribution(Distribution):
+  def is_pure(self):
+    return False
 
 
 # List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
@@ -7,13 +13,15 @@ pyfmipp_additional_files = [
   'lib/_fmippex.pyd',
   'lib/fmippim.dll',
   'lib/fmippex.dll',
-  'lib/sundials_cvode.dll',
-  'lib/sundials_nvecserial.dll',
+  'lib/sundials_cvode.lib',
+  'lib/sundials_nvecserial.lib',
   'licenses/FMIPP_LICENSE.txt',
   'licenses/BOOST_SOFTWARE_LICENSE.txt',
   'licenses/SUNDIALS_LICENSE.txt',
   'export/bin/fmi2.dll',
   'export/bin/libfmipp_fmu_frontend.lib',
+  'lib/boost_filesystem-vc141-mt-1_64.dll',
+  'lib/boost_system-vc141-mt-1_64.dll'
   ]
 
   
@@ -44,4 +52,6 @@ setup(
 	],
   packages = [ 'fmipp', 'fmipp.export' ],
   package_data = { 'fmipp': pyfmipp_additional_files },
+  include_package_data=True,
+  distclass=BinaryDistribution,
   )
