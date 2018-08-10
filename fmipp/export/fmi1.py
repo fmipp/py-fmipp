@@ -10,7 +10,7 @@ import platform
 # Get templates for the XML model description depending on the FMI version.
 def fmi1GetModelDescriptionTemplates( verbose, modules ):
     # Template string for XML model description header.
-    header = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription fmiVersion="1.0" modelName="__MODEL_NAME__" modelIdentifier="__MODEL_IDENTIFIER__" description="TRNSYS FMI CS export" generationTool="FMI++ TRNSYS Export Utility" generationDateAndTime="__DATE_AND_TIME__" variableNamingConvention="flat" numberOfContinuousStates="0" numberOfEventIndicators="0" author="__USER__" guid="{__GUID__}">\n\t<VendorAnnotations>\n\t\t<Tool name="python">\n\t\t\t<Executable arguments="-c &quot;from fmipp.export.runFMUBackend import runFMUBackend; runFMUBackend( &apos;__FMU_BACKEND_FILE__&apos;, &apos;__FMU_BACKEND_CLASS__&apos; )&quot;" executableURI="__PYTHON_URI__"/>\n\t\t</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n'
+    header = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription fmiVersion="1.0" modelName="__MODEL_NAME__" modelIdentifier="__MODEL_IDENTIFIER__" description="TRNSYS FMI CS export" generationTool="FMI++ TRNSYS Export Utility" generationDateAndTime="__DATE_AND_TIME__" variableNamingConvention="flat" numberOfContinuousStates="0" numberOfEventIndicators="0" author="__USER__" guid="{__GUID__}">\n\t<VendorAnnotations>\n\t\t<Tool name="python">\n\t\t\t<Executable arguments="run_backend___GUID__.py" executableURI="__PYTHON_URI__"/>\n\t\t</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n'
 
     # Template string for XML model description of scalar variables.
     scalar_variable_node = '\t\t<ScalarVariable name="__VAR_NAME__" valueReference="__VAL_REF__" variability="__VARIABILITY__" causality="__CAUSALITY__">\n\t\t\t<__VAR_TYPE____START_VALUE__/>\n\t\t</ScalarVariable>\n'
@@ -40,14 +40,6 @@ def fmi1addVariabilityAndCausalityToModelDescription( scalar_variable_descriptio
     return scalar_variable_description
 
 
-# Add deck file as entry point to XML model description.
-def fmi1AddBackendClassFileToModelDescription( fmu_backend_class, fmu_backend_file, header, footer, vebose, modules ):
-    file_name = modules.os.path.basename( fmu_backend_file )
-    header = header.replace( '__FMU_BACKEND_FILE__', modules.os.path.join( 'resources', file_name ) )
-    header = header.replace( '__FMU_BACKEND_CLASS__', fmu_backend_class )
-    return ( header, footer )
-
-
 # Add optional files to XML model description.
 def fmi1AddOptionalFilesToModelDescription( optional_files, header, footer, verbose, modules ):
     if ( 0 == len( optional_files ) ):
@@ -66,14 +58,15 @@ def fmi1AddOptionalFilesToModelDescription( optional_files, header, footer, verb
     return ( header, footer )
 
 
-# Create DLL for FMU.
+# Create shared library for FMU.
 def fmi1CreateSharedLibrary( fmi_model_identifier, verbose, modules ):
-    # Define name of shared library based on platform.
-    if platform.system()=='Linux':
+    # Define name and extension of shared library file based on platform.
+    system = modules.platform.system()
+    if system == 'Linux':
       fmu_shared_library_name = fmi_model_identifier + '.so'
-    elif platform.system()=='Windows':
+    elif system == 'Windows':
       fmu_shared_library_name = fmi_model_identifier + '.dll'
-    else: #platform.system()=='Darwin'
+    else: # system == 'Darwin'
       fmu_shared_library_name = fmi_model_identifier + '.dylib'
 
     # Check if batch file for build process exists.

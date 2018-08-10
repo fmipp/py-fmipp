@@ -4,17 +4,17 @@
 
 #
 # This file is used to create FMUs for CoSimulation from TRNSYS deck files.
-# 
+#
 
 ### Setup for Python 2.
 try:
-    import sys, os, shutil, time, getpass, uuid, pickle, subprocess, glob, urlparse, urllib, collections, inspect, warnings
+    import sys, os, shutil, time, getpass, uuid, pickle, subprocess, glob, urlparse, urllib, collections, inspect, warnings, platform
 except:
     pass
 
 ### Setup for Python 3.
 try:
-    import sys, os, shutil, time, getpass, uuid, pickle, subprocess, glob, urllib.parse as urlparse, urllib.request as urllib, collections, inspect, warnings
+    import sys, os, shutil, time, getpass, uuid, pickle, subprocess, glob, urllib.parse as urlparse, urllib.request as urllib, collections, inspect, warnings, platform
 except:
     pass
 
@@ -54,21 +54,21 @@ def createFMU(
     # Check FMI model identifier.
     if not fmi_version in [ '1', '2' ]:
         raise TypeError( 'parameter \'fmi_version\' must be either 1 or 2' )
-        
+
     # Check verbosity flag.
     if not isinstance( verbose, bool ):
         raise TypeError( 'parameter \'verbose\' must be of type \'bool\'' )
-        
+
     # Check verbosity flag.
     if not isinstance( litter, bool ):
         raise TypeError( 'parameter \'litter\' must be of type \'bool\'' )
-        
+
     # Check start values.
     if start_values is None:
         start_values = {}
     elif not isinstance( start_values, dict ):
         raise TypeError( 'parameter \'start_values\' must be \'None\' or of type \'dict\'' )
-        
+
     # Check optional files.
     if optional_files is None:
         optional_files = []
@@ -77,8 +77,8 @@ def createFMU(
 
     # Create container for all used Python modules, which will be passed to all called functions.
     # This makes it easier to run this script with different Python version (2.x and 3.x).
-    Modules = collections.namedtuple( 'Modules', [ 'sys', 'os', 'shutil', 'time', 'getpass', 'uuid', 'urlparse', 'urllib', 'pickle', 'subprocess', 'glob', 'log', 'inspect', 'warnings' ] )
-    modules = Modules( sys, os, shutil, time, getpass, uuid, urlparse, urllib, pickle, subprocess, glob, log, inspect, warnings )
+    Modules = collections.namedtuple( 'Modules', [ 'sys', 'os', 'shutil', 'time', 'getpass', 'uuid', 'urlparse', 'urllib', 'pickle', 'subprocess', 'glob', 'log', 'inspect', 'warnings', 'platform' ] )
+    modules = Modules( sys, os, shutil, time, getpass, uuid, urlparse, urllib, pickle, subprocess, glob, log, inspect, warnings, platform )
 
     if ( True == verbose ):
         modules.log( '[DEBUG] Using FMI version {}'.format( fmi_version ) )
@@ -89,7 +89,7 @@ def createFMU(
 
     # Parse TRNSYS deck file to retrieve FMI input and output variable names.
     ( fmi_input_vars, fmi_output_vars, fmi_parameters, fmu_backend_class, fmu_backend_file ) = inspectFMUBackend( fmu_backend, verbose, modules )
-    
+
     try:
         fmu_name = generateFMU(
             fmi_version,
@@ -114,11 +114,11 @@ def createFMU(
 
 def inspectFMUBackend( fmu_backend, verbose, modules ):
     """
-    Check if back-end inherist from FMIAdapter.
-    Retrieve the name of the file in which the back-end is defined. 
-    Retrieve the input variables, output variables and parameter that an FMU back-end implementation defines.
+    Check if backend inherits from FMIAdapter.
+    Retrieve the name of the file in which the backend is defined.
+    Retrieve the input variables, output variables and parameter that an FMU backend implementation defines.
     """
-    # Check FMU back-end implementation.
+    # Check FMU backend implementation.
     if not issubclass( fmu_backend, FMIAdapterBase ):
         raise TypeError( 'class \'fmu_backend\' must be a subclass of \'FMIAdapter\'' )
 
@@ -127,16 +127,16 @@ def inspectFMUBackend( fmu_backend, verbose, modules ):
     fmi_output_vars = {}
     fmi_parameters = {}
 
-    # Instantiate the back-end (debug mode).
+    # Instantiate the backend (debug mode).
     backend = fmu_backend()
 
     fmu_backend_class = backend.__class__.__name__
-    
-    # Get file in which the back-end class is defined.
+
+    # Get file in which the backend class is defined.
     fmu_backend_file = str()
     try:
         fmu_backend_file = modules.inspect.getfile( backend.__class__ )
-        
+
         if ( True is verbose ):
             modules.log( '[DEBUG] Class \'{0}\' defined in file: {1}'.format( fmu_backend_class, fmu_backend_file ) )
     except TypeError:
@@ -146,7 +146,7 @@ def inspectFMUBackend( fmu_backend, verbose, modules ):
         modules.warnings.simplefilter( "ignore", category = RuntimeWarning )
         # Initialize the backend.
         backend.init( 0 )
-        
+
         fmi_input_vars[ 'Real' ] = backend._realInputNames
         fmi_input_vars[ 'Integer' ] = backend._integerInputNames
         fmi_input_vars[ 'Boolean' ] = backend._booleanInputNames
@@ -157,7 +157,7 @@ def inspectFMUBackend( fmu_backend, verbose, modules ):
             for type, vars in fmi_input_vars.items():
                 for var in vars:
                     modules.log( '\t{0} ({1})'.format( var, type ) )
-        
+
         fmi_output_vars[ 'Real' ] = backend._realOutputNames
         fmi_output_vars[ 'Integer' ] = backend._integerOutputNames
         fmi_output_vars[ 'Boolean' ] = backend._booleanOutputNames
@@ -201,8 +201,8 @@ def generateFMU(
 
     :param fmi_version: FMI version
     :param fmi_model_identifier: FMI model identfier for FMU
-    :param fmu_backend_class: name of the back-end class
-    :param fmu_backend_file: file defining the back-end class
+    :param fmu_backend_class: name of the backend class
+    :param fmu_backend_file: file defining the backend class
     :param fmi_input_vars: definition of input variables
     :param fmi_output_vars: definition of output variable names
     :param start_values: definition of start values
@@ -211,9 +211,14 @@ def generateFMU(
     :param litter: do not clean-up intermediate files
     :param modules: named tuple containing all imported modules
     """
+    # Create new GUID.
+    guid = str( modules.uuid.uuid1() )
 
     # Create FMU model description.
-    model_description_name = createModelDescription( fmi_version, fmi_model_identifier, fmu_backend_class, fmu_backend_file, fmi_input_vars, fmi_output_vars, fmi_parameters, start_values, optional_files, verbose, modules )
+    model_description_name = createModelDescription( fmi_version, fmi_model_identifier, fmu_backend_class, fmu_backend_file, fmi_input_vars, fmi_output_vars, fmi_parameters, guid, start_values, optional_files, verbose, modules )
+
+    # Create script for running the backend implementation.
+    backend_script_name = createBackendScript( fmu_backend_class, fmu_backend_file, guid, verbose, modules )
 
     # Create FMU shared library.
     fmu_shared_library_name = createSharedLibrary( fmi_model_identifier, fmi_version, verbose, modules )
@@ -222,8 +227,21 @@ def generateFMU(
     if ( True == modules.os.path.isdir( fmi_model_identifier ) ):
         modules.shutil.rmtree( fmi_model_identifier, False )
 
+    # Retrieve platform information.
+    platform_type = str()
+    platform_id = modules.platform.platform().lower()
+    platform_bits = modules.platform.architecture()[0][:2]
+    if 'linux' in platform_id:
+        platform_type = 'linux' + platform_bits
+    elif 'cygwin' in platform_id:
+        platform_type = 'cygwin' + platform_bits
+    elif 'windows' in platform_id:
+        platform_type = 'win' + platform_bits
+    else:
+        raise RuntimeError( '\n[ERROR] platform not supported: {}'.format( modules.platform.platform() ) )
+
     # Working directory path for the FMU DLL.
-    binaries_dir = modules.os.path.join( fmi_model_identifier, 'binaries', 'win64' )
+    binaries_dir = modules.os.path.join( fmi_model_identifier, 'binaries', platform_type )
 
     # Create working directory (incl. sub-directories) for FMU creation.
     modules.os.makedirs( binaries_dir )
@@ -236,7 +254,8 @@ def generateFMU(
 
     # Copy all files to working directory.
     modules.shutil.copy( model_description_name, fmi_model_identifier ) # XML model description.
-    modules.shutil.copy( fmu_backend_file, resources_dir ) # Back-end implementation.
+    modules.shutil.copy( backend_script_name, resources_dir ) # Script for running the backend implementation.
+    modules.shutil.copy( fmu_backend_file, resources_dir ) # backend implementation.
     for file_name in optional_files: # Additional files.
         modules.shutil.copy( file_name, resources_dir )
     modules.shutil.copy( fmu_shared_library_name, binaries_dir ) # FMU DLL.
@@ -254,7 +273,7 @@ def generateFMU(
 
     # Clean up.
     if ( False == litter ):
-        for fn in [ model_description_name, 'build.log', 'fmiFunctions.obj' ]:
+        for fn in [ model_description_name, backend_script_name, 'build.log', 'fmiFunctions.obj' ]:
             modules.os.remove( fn ) if modules.os.path.isfile( fn ) else None
         modules.shutil.rmtree( fmi_model_identifier, False )
         for file_name in modules.glob.glob( fmi_model_identifier + '.*' ):
@@ -273,6 +292,7 @@ def createModelDescription(
         fmi_input_vars,
         fmi_output_vars,
         fmi_parameters,
+        guid,
         start_values,
         optional_files,
         verbose,
@@ -294,7 +314,7 @@ def createModelDescription(
     model_description_header = model_description_header.replace( '__USER__', modules.getpass.getuser() )
 
     # GUID.
-    model_description_header = model_description_header.replace( '__GUID__', str( modules.uuid.uuid1() ) )
+    model_description_header = model_description_header.replace( '__GUID__', guid )
 
     # URI of Python main executable.
     python_exe_uri = modules.urlparse.urljoin( 'file:', modules.urllib.pathname2url( modules.sys.executable ) )
@@ -368,11 +388,7 @@ def createModelDescription(
             # Write scalar variable description to file.
             model_description_scalars += scalar_variable_description;
 
-    # Back-end class name and file.
-    ( model_description_header, model_description_footer ) = \
-        addBackendClassFileToModelDescription( fmu_backend_class, fmu_backend_file, model_description_header, model_description_footer, fmi_version, verbose, modules )
-
-    # Add back-end class file and optional files.
+    # Add backend class file and optional files.
     files_to_add = [ fmu_backend_file ] + optional_files
     ( model_description_header, model_description_footer ) = \
         addOptionalFilesToModelDescription( model_description_header, model_description_footer, files_to_add, fmi_version, verbose, modules)
@@ -386,6 +402,24 @@ def createModelDescription(
     model_description.close()
 
     return model_description_name
+
+
+# Create script for running the backend implementation.
+def createBackendScript( fmu_backend_class, fmu_backend_file, guid, verbose, modules ):
+    # Extract file name from full path.
+    file_name = modules.os.path.basename( fmu_backend_file )
+
+    # Define name of script.
+    backend_script_name = 'run_backend_{}.py'.format( guid )
+
+    # Create script.
+    backend_script = open( backend_script_name, 'w' )
+    backend_script.write( 'from fmipp.export.runFMUBackend import runFMUBackend\n' )
+    backend_script.write( 'runFMUBackend( \'{backend_file}\', \'{backend_class}\' )\n'.format( backend_file = file_name, backend_class = fmu_backend_class ) )
+
+    if ( True == verbose ): modules.log( '[DEBUG] Created script for running the backend implementation: ', backend_script_name )
+
+    return backend_script_name
 
 
 # Get templates for the XML model description depending on the FMI version.

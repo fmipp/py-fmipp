@@ -5,12 +5,11 @@
 #
 # Collection of helper functions for creating FMU CS according to FMI 2.0
 #
-import platform#, os, os.path
 
 # Get templates for the XML model description depending on the FMI version.
 def fmi2GetModelDescriptionTemplates( verbose, modules ):
     # Template string for XML model description header.
-    header = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription\n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n\tfmiVersion="2.0"\n\tmodelName="__MODEL_NAME__"\n\tguid="{__GUID__}"\n\tgenerationTool="FMI++ TRNSYS Export Utility"\n\tauthor="__USER__"\n\tgenerationDateAndTime="__DATE_AND_TIME__"\n\tvariableNamingConvention="flat"\n\tnumberOfEventIndicators="0">\n\t<CoSimulation\n\t\tmodelIdentifier="__MODEL_IDENTIFIER__"\n\t\tneedsExecutionTool="true"\n\t\tcanHandleVariableCommunicationStepSize="true"\n\t\tcanNotUseMemoryManagementFunctions="true"\n\t\tcanInterpolateInputs="false"\n\t\tmaxOutputDerivativeOrder="0"\n\t\tcanGetAndSetFMUstate="false"\n\t\tprovidesDirectionalDerivative="false"/>\n\t<VendorAnnotations>\n\t\t<Tool name="FMI++Export">\n\t\t\t<Executable\n\t\t\t\texecutableURI="__PYTHON_URI__"\n\t\t\t\tentryPointURI="fmu://resources/"\n\t\t\t\targuments="-c &quot;from fmipp.export.runFMUBackend import runFMUBackend; runFMUBackend( &apos;__FMU_BACKEND_FILE__&apos;, &apos;__FMU_BACKEND_CLASS__&apos; )&quot;"\n\t\t\t\tpreArguments=""\n\t\t\t\tpostArguments=""/>__ADDITIONAL_FILES__</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n'
+    header = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription\n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n\tfmiVersion="2.0"\n\tmodelName="__MODEL_NAME__"\n\tguid="{__GUID__}"\n\tgenerationTool="FMI++ TRNSYS Export Utility"\n\tauthor="__USER__"\n\tgenerationDateAndTime="__DATE_AND_TIME__"\n\tvariableNamingConvention="flat"\n\tnumberOfEventIndicators="0">\n\t<CoSimulation\n\t\tmodelIdentifier="__MODEL_IDENTIFIER__"\n\t\tneedsExecutionTool="true"\n\t\tcanHandleVariableCommunicationStepSize="true"\n\t\tcanNotUseMemoryManagementFunctions="true"\n\t\tcanInterpolateInputs="false"\n\t\tmaxOutputDerivativeOrder="0"\n\t\tcanGetAndSetFMUstate="false"\n\t\tprovidesDirectionalDerivative="false"/>\n\t<VendorAnnotations>\n\t\t<Tool name="FMI++Export">\n\t\t\t<Executable\n\t\t\t\texecutableURI="__PYTHON_URI__"\n\t\t\t\tentryPointURI="fmu://resources/"\n\t\t\t\targuments="run_backend___GUID__.py"\n\t\t\t\tpreArguments=""\n\t\t\t\tpostArguments=""/>__ADDITIONAL_FILES__</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n'
 
     # Template string for XML model description of scalar variables.
     scalar_variable_node = '\t\t<ScalarVariable name="__VAR_NAME__" valueReference="__VAL_REF__" variability="__VARIABILITY__" causality="__CAUSALITY__" __INITIAL__>\n\t\t\t<__VAR_TYPE____START_VALUE__/>\n\t\t</ScalarVariable>\n'
@@ -40,14 +39,6 @@ def fmi2addVariabilityAndCausalityToModelDescription( scalar_variable_descriptio
     return scalar_variable_description
 
 
-# Add deck file as entry point to XML model description.
-def fmi2AddBackendClassFileToModelDescription( fmu_backend_class, fmu_backend_file, header, footer, verbose, modules ):
-    file_name = modules.os.path.basename( fmu_backend_file )
-    header = header.replace( '__FMU_BACKEND_FILE__', file_name )
-    header = header.replace( '__FMU_BACKEND_CLASS__', fmu_backend_class )
-    return ( header, footer )
-
-
 # Add optional files to XML model description.
 def fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verbose, modules ):
     if ( 0 == len( optional_files ) ):
@@ -66,24 +57,23 @@ def fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verb
     return ( header, footer )
 
 
-# Create DLL for FMU.
+# Create shared library for FMU.
 def fmi2CreateSharedLibrary( fmi_model_identifier, verbose, modules ):
-
-    #check platform Shared Library Ending
-    if platform.system()=='Linux':
+    # Check platform to determine shared library file extension.
+    system = modules.platform.system()
+    if system =='Linux':
       file_ending = '.so'
-    elif platform.system()=='Windows':
+    elif system == 'Windows':
       file_ending = '.dll'
-    else: #platform.system()=='Darwin'
+    else: # system == 'Darwin'
       file_ending = '.dylib'
 
     # Define name of shared library based on platform.
-    fmu_shared_library_name = fmi_model_identifier + file_ending 
+    fmu_shared_library_name = fmi_model_identifier + file_ending
 
     for file in modules.os.listdir(modules.os.path.join(modules.os.path.dirname(__file__), 'bin')):
       if ((file.startswith('libfmi2.') or file.startswith('fmi2.')) and file.endswith(file_ending)):
         fmi2_dll_path = modules.os.path.join( modules.os.path.dirname( __file__ ), 'bin', file)
-
 
     if ( False == modules.os.path.isfile( fmi2_dll_path ) ):
         raise RuntimeError( '\n[ERROR] DLL not found: {}'.format( fmi2_dll_path ) )
