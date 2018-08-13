@@ -1,4 +1,5 @@
 ----------------1. Windows: building wheels----------------
+NOTE: By default this works only on WINDOWS due to setup.py platform settings
 
 -------- building requirements for python--------
 
@@ -42,6 +43,7 @@
 
 
 ----------------2. Linux: creating source distribution----------------
+NOTE: By default this works only on LINUX due to setup.py platform settings
 
 -------- requirements --------
 

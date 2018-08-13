@@ -1,35 +1,23 @@
-from distutils.core import setup
-from distutils.extension import Extension
-from distutils.command.build import build
 import platform
 import os
 
-#rectifying build order for swig .i files-----
-class CustomBuild(build):
-    sub_commands = [
-        ('build_ext', build.has_ext_modules),
-        ('build_py', build.has_pure_modules),
-        ('build_clib', build.has_c_libraries),
-        ('build_scripts', build.has_scripts),
-    ]
-##--------------------------------------------
-
-
 #check platform specifications----
+use_win_wheels = False
 if platform.system()=='Linux':
   fmu_bin_ext = '\".so\"'
   if '32bit' in platform.architecture():
     install_platform = 'linux32'
   else:
     install_platform = 'linux64'
-
+#endif
 if platform.system()=='Windows':
+  use_win_wheels = True
   fmu_bin_ext = '\".dll\"'
   if '32bit' in platform.architecture():
     install_platform = 'win32'
   else:
     install_platform = 'win64'
-
+#endif
 if platform.system()== 'Darwin':
   fmu_bin_ext = '\".dylib\"'
   if '32bit' in platform.architecture():
@@ -37,7 +25,31 @@ if platform.system()== 'Darwin':
   else:
     install_platform = 'darwin64'
 fmu_bin_dir = '\"' + install_platform + '\"'
+#endif
 ##--------------------------------
+
+#platform dependant options--------------------------------
+if use_win_wheels:
+  from setuptools import setup
+  from setuptools.dist import Distribution
+
+  class BinaryDistribution(Distribution):
+    def is_pure(self):
+      return False
+else: # for linux
+  from distutils.core import setup
+  from distutils.extension import Extension
+  from distutils.command.build import build
+
+  class CustomBuild(build):
+      sub_commands = [
+                      ('build_ext', build.has_ext_modules),
+                      ('build_py', build.has_pure_modules),
+                      ('build_clib', build.has_c_libraries),
+                      ('build_scripts', build.has_scripts),
+                     ]
+#endif
+##---------------------------------------------------------
 
 
 macros=[('FMU_BIN_DIR',                   fmu_bin_dir),
@@ -86,29 +98,18 @@ import_base_src = ['source/fmipp/import/base/src/BareFMU.cpp', 'source/fmipp/imp
 import_integrators_src = ['source/fmipp/import/integrators/src/Integrator.cpp', 'source/fmipp/import/integrators/src/IntegratorStepper.cpp']
 import_utility_src = ['source/fmipp/import/utility/src/FixedStepSizeFMU.cpp', 'source/fmipp/import/utility/src/History.cpp', 'source/fmipp/import/utility/src/IncrementalFMU.cpp', 'source/fmipp/import/utility/src/InterpolatingFixedStepSizeFMU.cpp', 'source/fmipp/import/utility/src/RollbackFMU.cpp', 'source/fmipp/import/utility/src/VariableStepSizeFMU.cpp']
 all_cpp = export_functions + export_src + import_base_src + import_integrators_src + import_utility_src
-
 libfmippex_i = ['source/fmipp/export/swig/libfmippex.i']
 libfmippim_i = ['source/fmipp/import/swig/libfmippim.i']
-
-##----------------------------------------------------------------------------------------------------
-
-#Other --------------------
 libfmipp_fmu_frontendlib_sources = ['source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/HelperFunctions.cpp','source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-
 fmi2dll_sources = ['source/fmipp/export/functions/fmi_v2.0/fmi2Functions.cpp', 'source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/SHMMaster.cpp', 'source/fmipp/export/src/SHMManager.cpp', 'source/fmipp/export/src/HelperFunctions.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-
-include_directorys = ['source/fmipp/', 'source/fmipp/common/', 'source/fmipp/common/fmi_v1.0/', 'source/fmipp/common/fmi_v2.0/', 'source/fmipp/export/include/', 'source/fmipp/import/base/include/', 'source/fmipp/import/integrators/include/', 'source/fmipp/import/utility/include/']
-
+include_directorys = ['source/fmipp/', 'source/fmipp/common/', 'source/fmipp/common/fmi_v1.0/', 'source/fmipp/common/fmi_v2.0/', 'source/fmipp/export/include/', 'source/fmipp/import/base/include/', 'source/fmipp/import/integrators/include/', 'source/fmipp/import/utility/include/', os.path.join(os.path.dirname(__file__),'source','fmipp')]
 additional_libs = ['boost_filesystem', 'boost_system','sundials_cvode', 'sundials_nvecserial'] 
 library_dir = [os.path.join(os.path.dirname(__file__),'fmipp','lib')]
-
-
-
-
+##----------------------------------------------------------------------------------------------------
 
 #Modules------------------------------------------------------------------------------------
 importpyd =                Extension('fmipp/lib/_fmippim',
-                                     swig_opts = ['-c++', '-Isource/fmipp/', '-outdir','fmipp', '-DUSE_SUNDIALS'],
+                                     swig_opts = ['-c++', '-Isource/fmipp', '-outdir','fmipp', '-DUSE_SUNDIALS'],
                                      sources = libfmippim_i + import_base_src + import_integrators_src + import_utility_src,
                                      include_dirs = include_directorys,
                                      define_macros = macros,
@@ -161,27 +162,84 @@ libfmipp_fmu_frontendlib = Extension('fmipp/export/bin/libfmipp_fmu_frontend',
 ##------------------------------------------------------------------------------------------
 
 
-setup(name = 'fmipp',
-      version = '1.3',
-      description = 'FMI++ Python Interface for Windows',
-      long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI                specification and the typical requirements of simulation tools.',
-#      long_description = pyfmipp_long_description,
-      url = 'http://fmipp.sourceforge.net',
-      maintainer = 'Edmund Widl',
-      maintainer_email = 'edmund.widl@ait.ac.at',
-      license = 'BSD license & BOOST software license',
-      platforms = 'Windows',
-      keywords = [ 'FMI', 'Functional Mock-up Interface', 'FMI++ Library' ],
-      classifiers = [
+#Windows specific definitions---------------
+# List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
+pyfmipp_additional_files = [
+  'lib/_fmippim.pyd',
+  'lib/_fmippex.pyd',
+  'lib/fmippim.dll',
+  'lib/fmippex.dll',
+  'lib/sundials_cvode.lib',
+  'lib/sundials_nvecserial.lib',
+  'licenses/FMIPP_LICENSE.txt',
+  'licenses/BOOST_SOFTWARE_LICENSE.txt',
+  'licenses/SUNDIALS_LICENSE.txt',
+  'export/bin/fmi2.dll',
+  'export/bin/libfmipp_fmu_frontend.lib',
+  'lib/boost_filesystem-vc141-mt-1_64.dll',
+  'lib/boost_system-vc141-mt-1_64.dll'
+  ]
+# Read long description from file (reStructuredText syntax). Will be parsed and displayed as HTML online.
+with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
+##------------------------------------------
+
+
+##### SETUP ##### ------------------------------------------------------------------------------------------
+_name = 'fmipp'
+_version = '1.3'
+_description = 'FMI++ Python Interface for Windows'
+_long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI                specification and the typical requirements of simulation tools.'
+_url = 'http://fmipp.sourceforge.net'
+_maintainer = 'Edmund Widl'
+_maintainer_email = 'edmund.widl@ait.ac.at'
+_license = 'BSD license & BOOST software license'
+_platforms = 'Windows'
+_keywords = [ 'FMI', 'Functional Mock-up Interface', 'FMI++ Library' ]
+_classifiers = [
          'Development Status :: 4 - Beta',
          'Intended Audience :: Science/Research',
          'Operating System :: Microsoft :: Windows',
          'Topic :: Scientific/Engineering',
          'Programming Language :: Python :: 3.5',
          'Programming Language :: C++',
-        ],
+        ]
+_packages = ['fmipp', 'fmipp.export']
+
+
+
+if use_win_wheels:
+  setup(name = _name,
+        version = _version,
+        description = _dscription,
+        #long_description = _long_description,
+        long_description = pyfmipp_long_description,
+        url = _url,
+        maintainer = _maintainer,
+        maintainer_email = _maintainer_email,
+        license = 'BSD license & BOOST software license',
+        platforms = _platforms,
+        keywords = _keywords,
+        classifiers = _classifiers,
+        packages = _packages,
+        package_data = { 'fmipp': pyfmipp_additional_files },
+        include_package_data=True,
+        distclass=BinaryDistribution,
+       )
+else: #for linux
+  setup(name = _name,
+      version = _version,
+      description = _description,
+      #long_description = _long_description,
+      long_description = pyfmipp_long_description,
+      url = _url,
+      maintainer = _maintainer,
+      maintainer_email = _maintainer_email,
+      license = 'BSD license & BOOST software license',
+      platforms = _platforms,
+      keywords = _keywords,
+      classifiers = _classifiers,
       cmdclass = {'build': CustomBuild},
-      packages = [ 'fmipp', 'fmipp.export', 'fmipp.test'],
+      packages = _packages,
       ext_modules = [importpyd, exportpyd, importdll, exportdll, fmi2dll, libfmipp_fmu_frontendlib],
       include_package_data = True,
      )
