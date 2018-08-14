@@ -1,5 +1,7 @@
 import platform
 import os
+import sys
+
 
 #check platform specifications----
 use_win_wheels = False
@@ -54,41 +56,11 @@ else: # for linux
 
 macros=[('FMU_BIN_DIR',                   fmu_bin_dir),
         ('FMU_BIN_EXT',                   fmu_bin_ext),
-        ('fmippim_EXPORTS',               None),
         ('FRONT_END_TYPE',                'FMIComponentFrontEnd'),
         ('FRONT_END_TYPE_INCLUDE',        '\"export/include/FMIComponentFrontEnd.h\"'),
-        ('fmi2EXPORTS',                   None),
-        ('fmippim_wrap_java_Exports',     None),
-        ('EPS_TIME',                      '1e-9'),
-        ('FMU_URI_PRE',                   '\"\"'),    #not directly used?
-        ('givezero_EXPORTS',              None),
-        ('zigzag_EXPORTS',                None),
-        ('zigzag2_EXPORTS',               None),
-        ('zigzag2_me_only_EXPORTS',       None),
-        ('FMI2_NO_COSIMULATION_FUNCTION', None),
-        ('step_t0_EXPORTS',               None),
-        ('MODEL_IDENTIFIER',              'sine_standalone2'),
-        ('sine_standalone2_EXPORTS',      None),
-        ('sine_standalone_EXPORTS',       None),
-        ('v2_0_EXPORTS',                  None),
-        ('bouncingBall_EXPORTS',          None),
-        ('dq_EXPORTS',                    None),
-        ('vanDerPol_EXPORTS',             None),
-        ('values_EXPORTS',                None),
-        ('stiff_EXPORTS',                 None),
-        ('linear_stiff_EXPORTS',          None),
-        ('stiff2_EXPORTS',                None),
-        ('polynomial_EXPORTS',            None),
-        ('asymptotic_sine_EXPORTS',       None),
-        ('robertson_EXPORTS',             None),
-        ('dxiskx_EXPORTS',                None),
-        ('zerocrossing_EXPORTS',          None),
+        ('FMU_URI_PRE',                   '\"\"'),
         ('USE_SUNDIALS',                  None),
         ('SWIGPYTHON',                    None),
-        ('PATH_SEPARATOR',                ':'),
-        ('CMAKE_CXX_FLAGS',               '-std=c++11'),
-        ('FMIPP_WRAP_PYTHON_MODULE',      'fmipp_wrap_python'),
-        ('SWIG_PYTHON_2_UNICODE',         None),
        ]
 
 #PATHS------------------------------------------------------------------------------------------------
@@ -102,9 +74,9 @@ libfmippex_i = ['source/fmipp/export/swig/libfmippex.i']
 libfmippim_i = ['source/fmipp/import/swig/libfmippim.i']
 libfmipp_fmu_frontendlib_sources = ['source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/HelperFunctions.cpp','source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
 fmi2dll_sources = ['source/fmipp/export/functions/fmi_v2.0/fmi2Functions.cpp', 'source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/SHMMaster.cpp', 'source/fmipp/export/src/SHMManager.cpp', 'source/fmipp/export/src/HelperFunctions.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-include_directorys = ['source/fmipp/', 'source/fmipp/common/', 'source/fmipp/common/fmi_v1.0/', 'source/fmipp/common/fmi_v2.0/', 'source/fmipp/export/include/', 'source/fmipp/import/base/include/', 'source/fmipp/import/integrators/include/', 'source/fmipp/import/utility/include/', os.path.join(os.path.dirname(__file__),'source','fmipp')]
+include_directorys = ['source/fmipp/', os.path.join(os.path.dirname(__file__),'source','fmipp')]
 additional_libs = ['boost_filesystem', 'boost_system','sundials_cvode', 'sundials_nvecserial'] 
-library_dir = [os.path.join(os.path.dirname(__file__),'fmipp','lib')]
+library_dir = [os.path.join(os.path.dirname(__file__),'fmipp','lib'), os.path.join(os.path.dirname(__file__),'fmipp','export'), os.path.join(os.path.dirname(__file__),'fmipp','export','bin')]
 ##----------------------------------------------------------------------------------------------------
 
 #Modules------------------------------------------------------------------------------------
@@ -116,7 +88,9 @@ importpyd =                Extension('fmipp/lib/_fmippim',
                                      undef_macros = ['NDEBUG'],
                                      library_dirs = library_dir,
                                      libraries = additional_libs,
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 exportpyd =                Extension('fmipp/export/_fmippex',
                                      swig_opts = ['-c++', '-Isource/fmipp/', '-outdir','fmipp/export', '-DUSE_SUNDIALS'],
@@ -126,21 +100,27 @@ exportpyd =                Extension('fmipp/export/_fmippex',
                                      undef_macros = ['NDEBUG'],
                                      library_dirs = library_dir,
                                      libraries = additional_libs,
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 importdll =                Extension('fmipp/lib/libfmippim',
                                      sources = import_base_src + import_integrators_src + import_utility_src,
                                      include_dirs = include_directorys,
                                      define_macros = macros,
                                      undef_macros = ['NDEBUG'],
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 exportdll =                Extension('fmipp/lib/libfmippex',
                                      sources = export_src,
                                      include_dirs = include_directorys,
                                      define_macros = macros,
                                      undef_macros = ['NDEBUG'],
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 
 fmi2dll =                  Extension('fmipp/export/bin/libfmi2',
@@ -150,14 +130,18 @@ fmi2dll =                  Extension('fmipp/export/bin/libfmi2',
                                      undef_macros = ['NDEBUG'],
                                      library_dirs = library_dir,
                                      libraries = additional_libs,
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 libfmipp_fmu_frontendlib = Extension('fmipp/export/bin/libfmipp_fmu_frontend',
                                      sources = libfmipp_fmu_frontendlib_sources,
                                      include_dirs = include_directorys + os.getenv('Path',default='').split(os.pathsep),
                                      define_macros = macros,
                                      undef_macros = ['NDEBUG'],
-                                     extra_compile_args = ['-g0'],
+                                     extra_compile_args = ['-g0','-std=c++11'],
+                                     extra_link_args = ['-lrt'],
+                                     runtime_library_dirs = library_dir,
                                     )
 ##------------------------------------------------------------------------------------------
 
@@ -179,9 +163,10 @@ pyfmipp_additional_files = [
   'lib/boost_filesystem-vc141-mt-1_64.dll',
   'lib/boost_system-vc141-mt-1_64.dll'
   ]
+##------------------------------------------
+
 # Read long description from file (reStructuredText syntax). Will be parsed and displayed as HTML online.
 with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
-##------------------------------------------
 
 
 ##### SETUP ##### ------------------------------------------------------------------------------------------

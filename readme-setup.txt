@@ -1,5 +1,5 @@
 ----------------1. Windows: building wheels----------------
-NOTE: By default this works only on WINDOWS due to setup.py platform settings
+NOTE: By default this build works only on WINDOWS due to setup.py platform settings
 
 -------- building requirements for python--------
 
@@ -43,7 +43,7 @@ NOTE: By default this works only on WINDOWS due to setup.py platform settings
 
 
 ----------------2. Linux: creating source distribution----------------
-NOTE: By default this works only on LINUX due to setup.py platform settings
+NOTE: By default this build works only on LINUX due to setup.py platform settings
 
 -------- requirements --------
 
@@ -60,7 +60,7 @@ NOTE: By default this works only on LINUX due to setup.py platform settings
 
 -------- generating the source distribution--------
 
--  run "python setup-linux.py sdist" in the command line to create the "fmipp-<version>.tar.gz" source distribution file
+-  run "python setup.py sdist" in the command line to create the "fmipp-<version>.tar.gz" source distribution file
 
 -------- Installation --------
 
