@@ -12,8 +12,8 @@ start_values = {
     'ii_y' : 4, 'ii_x' : 5,
     'pb_y' : True, 'pb_x' : True,
     'ib_y' : False, 'ib_x' : True,
-    'ps_y' : 'abc', 'ps_x' : 'def',
-    'is_y' : 'ghi', 'is_x' : 'jkl' 
+#    'ps_y' : 'abc', 'ps_x' : 'def',
+#    'is_y' : 'ghi', 'is_x' : 'jkl' 
     }
 
 optional_files = [ 'extra.dat' ]
@@ -69,8 +69,8 @@ assert fmu.getLastStatus() == fmipp.fmiOK
 print( 'ob_y = {}'.format( fmu.getBooleanValue( 'ob_y' ) ) )
 assert fmu.getLastStatus() == fmipp.fmiOK
 
-print( 'os_x = {}'.format( fmu.getStringValue( 'os_x' ) ) )
-assert fmu.getLastStatus() == fmipp.fmiOK
+#print( 'os_x = {}'.format( fmu.getStringValue( 'os_x' ) ) )
+#assert fmu.getLastStatus() == fmipp.fmiOK
 
-print( 'os_y = {}'.format( fmu.getStringValue( 'os_y' ) ) )
-assert fmu.getLastStatus() == fmipp.fmiOK
+#print( 'os_y = {}'.format( fmu.getStringValue( 'os_y' ) ) )
+#assert fmu.getLastStatus() == fmipp.fmiOK

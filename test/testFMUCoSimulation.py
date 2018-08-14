@@ -10,7 +10,7 @@ uri_to_extracted_fmu = fmipp.extractFMU( path_to_fmu, work_dir ) # extract FMU
 
 logging_on = False
 time_diff_resolution = 1e-9
-fmu = fmipp.FMUCoSimulation( uri_to_extracted_fmu, model_name, logging_on, time_diff_resolution )
+fmu = fmipp.FMUCoSimulationV1( uri_to_extracted_fmu, model_name, logging_on, time_diff_resolution )
 
 start_time = 0.
 stop_time = 10.

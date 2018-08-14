@@ -19,9 +19,9 @@ class FMUExportTestClass( FMIAdapterV2 ):
         self.defineBooleanInputs( 'ib_x', 'ib_y' )
         self.defineBooleanOutputs( 'ob_x', 'ob_y' )
 
-        self.defineStringParameters( 'ps_x', 'ps_y' )
-        self.defineStringInputs( 'is_x', 'is_y' )
-        self.defineStringOutputs( 'os_x', 'os_y' )
+#        self.defineStringParameters( 'ps_x', 'ps_y' )
+#        self.defineStringInputs( 'is_x', 'is_y' )
+#        self.defineStringOutputs( 'os_x', 'os_y' )
 
         
     def doStep( self, currentCommunicationPoint, communicationStepSize ):
@@ -81,19 +81,19 @@ class FMUExportTestClass( FMIAdapterV2 ):
             }
         self.setBooleanOutputValues( booleanOutputs )
 
-        # string
+#        # string
         
-        stringParam = self.getStringParameterValues()
-        for n,v in stringParam.items():
-            print( 'string param: name = {0}, value = {1}'.format( n, v ) )
+#        stringParam = self.getStringParameterValues()
+#        for n,v in stringParam.items():
+#            print( 'string param: name = {0}, value = {1}'.format( n, v ) )
 
-        stringInputs = self.getStringInputValues()
-        for n,v in stringInputs.items():
-            print( 'string input: name = {0}, value = {1}'.format( n, v ) )
+#        stringInputs = self.getStringInputValues()
+#        for n,v in stringInputs.items():
+#            print( 'string input: name = {0}, value = {1}'.format( n, v ) )
             
-        stringOutputs = {
-            'os_x' : stringInputs['is_x'] + stringParam['ps_x'], 
-            'os_y' : stringInputs['is_y'] + stringParam['ps_y']
-            }
-        self.setStringOutputValues( stringOutputs )
+#        stringOutputs = {
+#            'os_x' : stringInputs['is_x'] + stringParam['ps_x'], 
+#            'os_y' : stringInputs['is_y'] + stringParam['ps_y']
+#            }
+#        self.setStringOutputValues( stringOutputs )
       
