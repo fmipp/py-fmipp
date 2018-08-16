@@ -64,24 +64,24 @@ macros=[('FMU_BIN_DIR',                   fmu_bin_dir),
        ]
 
 #PATHS------------------------------------------------------------------------------------------------
-export_functions = ['source/fmipp/export/functions/fmi_v1.0/fmiFunctions.cpp', 'source/fmipp/export/functions/fmi_v2.0/fmi2Functions.cpp']
-export_src = ['source/fmipp/export/src/BackEndApplicationBase.cpp', 'source/fmipp/export/src/FMIComponentBackEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/HelperFunctions.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/IPCSlaveLogger.cpp', 'source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/export/src/SHMManager.cpp', 'source/fmipp/export/src/SHMMaster.cpp', 'source/fmipp/export/src/SHMSlave.cpp']
-import_base_src = ['source/fmipp/import/base/src/BareFMU.cpp', 'source/fmipp/import/base/src/CallbackFunctions.cpp', 'source/fmipp/import/base/src/DynamicalSystem.cpp', 'source/fmipp/import/base/src/FMUCoSimulation_v1.cpp', 'source/fmipp/import/base/src/FMUCoSimulation_v2.cpp', 'source/fmipp/import/base/src/FMUModelExchange_v1.cpp', 'source/fmipp/import/base/src/FMUModelExchange_v2.cpp', 'source/fmipp/import/base/src/LogBuffer.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/ModelManager.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-import_integrators_src = ['source/fmipp/import/integrators/src/Integrator.cpp', 'source/fmipp/import/integrators/src/IntegratorStepper.cpp']
-import_utility_src = ['source/fmipp/import/utility/src/FixedStepSizeFMU.cpp', 'source/fmipp/import/utility/src/History.cpp', 'source/fmipp/import/utility/src/IncrementalFMU.cpp', 'source/fmipp/import/utility/src/InterpolatingFixedStepSizeFMU.cpp', 'source/fmipp/import/utility/src/RollbackFMU.cpp', 'source/fmipp/import/utility/src/VariableStepSizeFMU.cpp']
+export_functions = ['source/fmipp-code/export/functions/fmi_v1.0/fmiFunctions.cpp', 'source/fmipp-code/export/functions/fmi_v2.0/fmi2Functions.cpp']
+export_src = ['source/fmipp-code/export/src/BackEndApplicationBase.cpp', 'source/fmipp-code/export/src/FMIComponentBackEnd.cpp', 'source/fmipp-code/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp-code/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp-code/export/src/HelperFunctions.cpp', 'source/fmipp-code/export/src/IPCLogger.cpp', 'source/fmipp-code/export/src/IPCMasterLogger.cpp', 'source/fmipp-code/export/src/IPCSlaveLogger.cpp', 'source/fmipp-code/export/src/ScalarVariable.cpp', 'source/fmipp-code/export/src/SHMManager.cpp', 'source/fmipp-code/export/src/SHMMaster.cpp', 'source/fmipp-code/export/src/SHMSlave.cpp']
+import_base_src = ['source/fmipp-code/import/base/src/BareFMU.cpp', 'source/fmipp-code/import/base/src/CallbackFunctions.cpp', 'source/fmipp-code/import/base/src/DynamicalSystem.cpp', 'source/fmipp-code/import/base/src/FMUCoSimulation_v1.cpp', 'source/fmipp-code/import/base/src/FMUCoSimulation_v2.cpp', 'source/fmipp-code/import/base/src/FMUModelExchange_v1.cpp', 'source/fmipp-code/import/base/src/FMUModelExchange_v2.cpp', 'source/fmipp-code/import/base/src/LogBuffer.cpp', 'source/fmipp-code/import/base/src/ModelDescription.cpp', 'source/fmipp-code/import/base/src/ModelManager.cpp', 'source/fmipp-code/import/base/src/PathFromUrl.cpp']
+import_integrators_src = ['source/fmipp-code/import/integrators/src/Integrator.cpp', 'source/fmipp-code/import/integrators/src/IntegratorStepper.cpp']
+import_utility_src = ['source/fmipp-code/import/utility/src/FixedStepSizeFMU.cpp', 'source/fmipp-code/import/utility/src/History.cpp', 'source/fmipp-code/import/utility/src/IncrementalFMU.cpp', 'source/fmipp-code/import/utility/src/InterpolatingFixedStepSizeFMU.cpp', 'source/fmipp-code/import/utility/src/RollbackFMU.cpp', 'source/fmipp-code/import/utility/src/VariableStepSizeFMU.cpp']
 all_cpp = export_functions + export_src + import_base_src + import_integrators_src + import_utility_src
-libfmippex_i = ['source/fmipp/export/swig/libfmippex.i']
-libfmippim_i = ['source/fmipp/import/swig/libfmippim.i']
-libfmipp_fmu_frontendlib_sources = ['source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/HelperFunctions.cpp','source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-fmi2dll_sources = ['source/fmipp/export/functions/fmi_v2.0/fmi2Functions.cpp', 'source/fmipp/export/src/ScalarVariable.cpp', 'source/fmipp/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp/export/src/IPCLogger.cpp', 'source/fmipp/export/src/IPCMasterLogger.cpp', 'source/fmipp/export/src/SHMMaster.cpp', 'source/fmipp/export/src/SHMManager.cpp', 'source/fmipp/export/src/HelperFunctions.cpp', 'source/fmipp/import/base/src/ModelDescription.cpp', 'source/fmipp/import/base/src/PathFromUrl.cpp']
-include_directorys = ['source/fmipp/', os.path.join(os.path.dirname(__file__),'source','fmipp')]
+libfmippex_i = ['source/fmipp-code/export/swig/libfmippex.i']
+libfmippim_i = ['source/fmipp-code/import/swig/libfmippim.i']
+libfmipp_fmu_frontendlib_sources = ['source/fmipp-code/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp-code/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp-code/export/src/IPCLogger.cpp', 'source/fmipp-code/export/src/IPCMasterLogger.cpp', 'source/fmipp-code/export/src/HelperFunctions.cpp','source/fmipp-code/export/src/ScalarVariable.cpp', 'source/fmipp-code/import/base/src/ModelDescription.cpp', 'source/fmipp-code/import/base/src/PathFromUrl.cpp']
+fmi2dll_sources = ['source/fmipp-code/export/functions/fmi_v2.0/fmi2Functions.cpp', 'source/fmipp-code/export/src/ScalarVariable.cpp', 'source/fmipp-code/export/src/FMIComponentFrontEnd.cpp', 'source/fmipp-code/export/src/FMIComponentFrontEndBase.cpp', 'source/fmipp-code/export/src/IPCLogger.cpp', 'source/fmipp-code/export/src/IPCMasterLogger.cpp', 'source/fmipp-code/export/src/SHMMaster.cpp', 'source/fmipp-code/export/src/SHMManager.cpp', 'source/fmipp-code/export/src/HelperFunctions.cpp', 'source/fmipp-code/import/base/src/ModelDescription.cpp', 'source/fmipp-code/import/base/src/PathFromUrl.cpp']
+include_directorys = ['source/fmipp-code/', os.path.join(os.path.dirname(__file__),'source','fmipp-code')]
 additional_libs = ['boost_filesystem', 'boost_system','sundials_cvode', 'sundials_nvecserial'] 
 library_dir = [os.path.join(os.path.dirname(__file__),'fmipp','lib'), os.path.join(os.path.dirname(__file__),'fmipp','export'), os.path.join(os.path.dirname(__file__),'fmipp','export','bin')]
 ##----------------------------------------------------------------------------------------------------
 
 #Modules------------------------------------------------------------------------------------
 importpyd =                Extension('fmipp/lib/_fmippim',
-                                     swig_opts = ['-c++', '-Isource/fmipp', '-outdir','fmipp', '-DUSE_SUNDIALS'],
+                                     swig_opts = ['-c++', '-Isource/fmipp-code', '-outdir','fmipp', '-DUSE_SUNDIALS'],
                                      sources = libfmippim_i + import_base_src + import_integrators_src + import_utility_src,
                                      include_dirs = include_directorys,
                                      define_macros = macros,
@@ -93,7 +93,7 @@ importpyd =                Extension('fmipp/lib/_fmippim',
                                      runtime_library_dirs = library_dir,
                                     )
 exportpyd =                Extension('fmipp/export/_fmippex',
-                                     swig_opts = ['-c++', '-Isource/fmipp/', '-outdir','fmipp/export', '-DUSE_SUNDIALS'],
+                                     swig_opts = ['-c++', '-Isource/fmipp-code', '-outdir','fmipp/export', '-DUSE_SUNDIALS'],
                                      sources = libfmippex_i + all_cpp,
                                      include_dirs = include_directorys,
                                      define_macros = macros,
@@ -171,7 +171,7 @@ with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
 
 ##### SETUP ##### ------------------------------------------------------------------------------------------
 _name = 'fmipp'
-_version = '1.3'
+_version = '1.3.1'
 _description = 'FMI++ Python Interface for Windows'
 _long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI                specification and the typical requirements of simulation tools.'
 _url = 'http://fmipp.sourceforge.net'
@@ -184,6 +184,7 @@ _classifiers = [
          'Development Status :: 4 - Beta',
          'Intended Audience :: Science/Research',
          'Operating System :: Microsoft :: Windows',
+         'Operating System :: Linux',
          'Topic :: Scientific/Engineering',
          'Programming Language :: Python :: 3.5',
          'Programming Language :: C++',
@@ -226,5 +227,4 @@ else: #for linux
       cmdclass = {'build': CustomBuild},
       packages = _packages,
       ext_modules = [importpyd, exportpyd, importdll, exportdll, fmi2dll, libfmipp_fmu_frontendlib],
-      include_package_data = True,
      )
