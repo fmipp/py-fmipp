@@ -25,12 +25,12 @@ This package provides a stand-alone version of the Python interface for the `FMI
 Installation on Windows
 -----------------------
 
-* use ``pip`` to install FMI++ from the PyPI via Wheels::
+* use ``pip`` to install FMI++ from the PyPI via Wheels (as the source distribution does not support Windows)::
 
-    $ pip install fmipp --prefer-binaries
+    $ pip install fmipp --prefer-binary
 
-``--prefer-binaries`` should guarantee that binary distributions (wheels) are chosen over source distributions for the installation.
-
+``--prefer-binary`` should guarantee that binary distributions (wheels) are chosen over source distributions for the installation.
+Alternatively ``--only-binary :all:`` can be used instead to force installing from binary distribution.
 
 Installation on Linux
 ---------------------
