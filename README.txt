@@ -25,7 +25,7 @@ This package provides a stand-alone version of the Python interface for the `FMI
 Installation on Windows
 -----------------------
 
-* use ``pip`` to install FMI++ from the PyPI via Wheels (as the source distribution does not support Windows)::
+* use ``pip`` to install FMI++ from the PyPI as pre-compiled binary package (Python wheel)::
 
     $ pip install fmipp --prefer-binary
 
@@ -43,7 +43,7 @@ Installation on Linux
     * SUNDIALS (libsundials-serial-dev)
     * Boost (libboost-all-dev)
 
-* use ``pip`` to install Fmipp from the PyPI via source distribution::
+* use ``pip`` to install FMI++ from the PyPI via source distribution::
 
     $ pip install fmipp
 
