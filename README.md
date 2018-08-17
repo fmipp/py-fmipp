@@ -6,7 +6,7 @@ NOTE: By default this build works only on WINDOWS due to setup.py platform setti
 building requirements for python
 --------------------------------
 
-*  install "wheel" and "setuptools" via pip
+*  install 'wheel' and 'setuptools' via pip
 
 
 preparing the code
@@ -30,15 +30,15 @@ preparing the code
 
 NOTE: the build-win.py file can be used IF adapted accordingly
 
-*  run "setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>" in the command line, where:
-    * <X.Y> is the python version used (e.g. "3.6")
-    * <platform_tag> refers to the platform used (i.e. "win32" or "win_amd64")
+*  run `setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>` in the command line, where:
+    * `<X.Y>` is the python version used (e.g. `3.6`)
+    * `<platform_tag>` refers to the platform used (i.e. `win32` or `win_amd64`)
 
 
 Installation from local
 -----------------------
 
-*  run "python -m pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl" to install the wheel, 
+*  run `python -m pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl` to install the wheel, 
 
 
 
@@ -59,19 +59,19 @@ requirements
     *  Boost (libboost-all-dev)
     *  pip (python-pip)
     *  git (git)
-*  download the fmipp source code into the "source"-folder (./source/<fmipp-code/>)
+*  download the fmipp source code into the 'source'-folder (./source/<fmipp-code/>)
 
 
 generating the source distribution
 ----------------------------------
 
-*  run "python setup.py sdist" in the command line to create the "fmipp-<version>.tar.gz" source distribution file
+*  run `python setup.py sdist` in the command line to create the 'fmipp-<version>.tar.gz' source distribution file
 
 
 Installation from local
 -----------------------
 
-*  run "python -m pip install /path/to/sdist/fmipp-<version>.tar.gz" to install the source distribution
+*  run `python -m pip install /path/to/sdist/fmipp-<version>.tar.gz` to install the source distribution
 
 
 
@@ -83,9 +83,9 @@ Installation from local
 Windows
 -------
 
-* run "python -m pip install fmipp"
-    *  it might be nescessary to set the flag "--prefer-binaries" if pip chooses to install not a wheel but source distribution as default
-    *  to redownload the package instead of using a cached version, set the flag "--no-cache-dir"
+* run `python -m pip install fmipp`
+    *  it might be nescessary to set the flag `--prefer-binaries` if pip chooses to install not a wheel but source distribution as default
+    *  to redownload the package instead of using a cached version, set the flag `--no-cache-dir`
 
 Linux
 -----
@@ -97,4 +97,4 @@ Linux
     *  Boost (libboost-all-dev)
     *  pip (python-pip)
 
-* run "python -m pip install fmipp"
+* run `python -m pip install fmipp`

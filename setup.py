@@ -167,7 +167,7 @@ pyfmipp_additional_files = [
 ##------------------------------------------
 
 # Read long description from file (reStructuredText syntax). Will be parsed and displayed as HTML online.
-with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
+with open( 'description.txt' ) as file: pyfmipp_long_description = file.read()
 
 
 ##### SETUP ##### ------------------------------------------------------------------------------------------
