@@ -172,7 +172,7 @@ with open( 'README.txt' ) as file: pyfmipp_long_description = file.read()
 
 ##### SETUP ##### ------------------------------------------------------------------------------------------
 _name = 'fmipp'
-_version = '1.3.3'
+_version = '1.4'
 _description = 'FMI++ Python Interface for Windows'
 _long_description = 'This package provides a Python wrapper for the FMI++ library, which \nintends to bridge the gap between the basic fuctionality provided by \nthe FMI                specification and the typical requirements of simulation tools.'
 _url = 'http://fmipp.sourceforge.net'
