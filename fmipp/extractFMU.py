@@ -17,8 +17,18 @@ def extractFMU( fmuFilePath, outputDirPath, command = None ):
 	  - unzip: 'unzip {fmu} -d {dir}'
 	  - 7-zip: '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
 	'''
-	import os, zipfile, urllib.parse, urllib.request
+	import os, zipfile
 
+	try:
+		import urllib.parse as urlparse, urllib.request as urllib
+	except:
+		pass
+	
+	try:
+		import urlparse, urllib
+	except:
+		pass
+	
 	# Check if specified file is indeed a zip file.
 	if not zipfile.is_zipfile( fmuFilePath ):
 		print( '%s is not a valid ZIP archive' % fmuFilePath )
@@ -60,7 +70,7 @@ def extractFMU( fmuFilePath, outputDirPath, command = None ):
 			os.system( command.format( fmu = fmuFilePath, dir = extractDirPath ) )
 
 		# Return URI to extracted FMU.
-		return urllib.parse.urljoin( 'file:', urllib.request.pathname2url( extractDirPath ) )
+		return urlparse.urljoin( 'file:', urllib.pathname2url( extractDirPath ) )
 	except:
 		print( 'failed to extract file: %s' % fmuFilePath )
 
