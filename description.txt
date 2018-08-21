@@ -1,5 +1,5 @@
-The FMI++ Python Interface for Windows and Linux
-================================================
+The FMI++ Python Interface
+==========================
 
 About
 -----
@@ -17,10 +17,21 @@ This allows FMUs to be integrated more easily, e.g., into fixed time step or dis
 .. _FMI++ Python Interface: https://pypi.python.org/pypi?:action=display&name=fmipp
 .. _FMI++ Library: http://fmipp.sourceforge.net
 
-This package provides a stand-alone version of the Python interface for the `FMI++ Library`_ for Windows and Linux.
+This package provides a stand-alone version of the Python interface for the `FMI++ Library`_.
 
 .. _FMI++ Library: http://fmipp.sourceforge.net
 
+Documentation
+-------------
+
+The FMI++ Python Interface provides several classes that allow to manipulate FMUs for ModelExchange and for Co-Simulation.
+An overview on how to use it can be found `here`_.
+
+.. _here: http://pythonhosted.org/fmipp/
+
+More extensive background information can be found in the documentation of the `FMI++ Library`_.
+
+.. _FMI++ Library: http://fmipp.sourceforge.net
 
 Installation on Windows
 -----------------------
@@ -46,16 +57,3 @@ Installation on Linux
 * use ``pip`` to install FMI++ from the PyPI via source distribution::
 
     $ pip install fmipp
-
-
-Documentation
--------------
-
-The FMI++ Python Interface provides several classes that allow to manipulate FMUs for ModelExchange and for Co-Simulation.
-An overview on how to use it can be found `here`_.
-
-.. _here: http://pythonhosted.org/fmipp/
-
-More extensive background information can be found in the documentation of the `FMI++ Library`_.
-
-.. _FMI++ Library: http://fmipp.sourceforge.net

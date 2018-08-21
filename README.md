@@ -30,7 +30,7 @@ preparing the code
 
 NOTE: the build-win.py file can be used IF adapted accordingly
 
-*  run `setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>` in the command line, where:
+*  run `python setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>` in the command line, where:
     * `<X.Y>` is the python version used (e.g. `3.6`)
     * `<platform_tag>` refers to the platform used (i.e. `win32` or `win_amd64`)
 
@@ -38,9 +38,7 @@ NOTE: the build-win.py file can be used IF adapted accordingly
 Installation from local
 -----------------------
 
-*  run `python -m pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl` to install the wheel, 
-
-
+*  run `python -m pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl` to install the wheel
 
 
 
@@ -59,7 +57,7 @@ requirements
     *  Boost (libboost-all-dev)
     *  pip (python-pip)
     *  git (git)
-*  download the fmipp source code into the 'source'-folder (./source/<fmipp-code/>)
+*  download the fmipp source code into the 'source'-folder (*./source/fmipp*)
 
 
 generating the source distribution
