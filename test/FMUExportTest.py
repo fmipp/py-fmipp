@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from fmipp.export.FMIAdapterV2 import FMIAdapterV2
 import warnings
 
@@ -96,4 +97,3 @@ class FMUExportTestClass( FMIAdapterV2 ):
 #            'os_y' : stringInputs['is_y'] + stringParam['ps_y']
 #            }
 #        self.setStringOutputValues( stringOutputs )
-      
