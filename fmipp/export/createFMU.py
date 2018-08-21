@@ -135,7 +135,7 @@ def inspectFMUBackend( fmu_backend, verbose, modules ):
     # Get file in which the backend class is defined.
     fmu_backend_file = str()
     try:
-        fmu_backend_file = modules.inspect.getfile( backend.__class__ )
+        fmu_backend_file = modules.inspect.getsourcefile( backend.__class__ )
 
         if ( True is verbose ):
             modules.log( '[DEBUG] Class \'{0}\' defined in file: {1}'.format( fmu_backend_class, fmu_backend_file ) )
@@ -389,9 +389,8 @@ def createModelDescription(
             model_description_scalars += scalar_variable_description;
 
     # Add backend class file and optional files.
-    files_to_add = [ fmu_backend_file ] + optional_files
     ( model_description_header, model_description_footer ) = \
-        addOptionalFilesToModelDescription( model_description_header, model_description_footer, files_to_add, fmi_version, verbose, modules)
+        addOptionalFilesToModelDescription( model_description_header, model_description_footer, optional_files, fmi_version, verbose, modules)
 
     # Create new XML model description file.
     model_description_name = 'modelDescription.xml'
@@ -414,8 +413,10 @@ def createBackendScript( fmu_backend_class, fmu_backend_file, guid, verbose, mod
 
     # Create script.
     backend_script = open( backend_script_name, 'w' )
+    backend_script.write( 'import os.path\n')
     backend_script.write( 'from fmipp.export.runFMUBackend import runFMUBackend\n' )
-    backend_script.write( 'runFMUBackend( \'{backend_file}\', \'{backend_class}\' )\n'.format( backend_file = file_name, backend_class = fmu_backend_class ) )
+    backend_script.write( 'backend_implementation = os.path.join( os.path.dirname( __file__ ), \'{backend_file}\' )\n'.format( backend_file = file_name ) )
+    backend_script.write( 'runFMUBackend( backend_implementation, \'{backend_class}\' )\n'.format( backend_class = fmu_backend_class ) )
 
     if ( True == verbose ): modules.log( '[DEBUG] Created script for running the backend implementation: ', backend_script_name )
 
