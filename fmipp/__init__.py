@@ -40,6 +40,6 @@ def licenseInfo():
 	info2 = 'For detailed information on the respective licenses please refer to the license files provided here:'
 
 	width = 65
-	full_info = '\n{}\n\n{}\n\n{}\n'.format( textwrap.fill( info1, width ), textwrap.fill( info2, width ), install_dir )
+	full_info = '\n{}\n\n{}\n\n{}\n'.format( textwrap.fill( info1, width ), textwrap.fill( info2, width ), os.path.join( install_dir, 'licenses' ) )
 	
 	print( full_info )
