@@ -1,3 +1,15 @@
+'''
+Run this script to create binary wheels and source distribution packages for the FMI++ Python Interface.
+
+Create binary wheel on Windows:
+> python setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>
+
+Create source distribution package on Linux:
+> python setup.py sdist
+
+See file README.md for more information.
+'''
+
 import platform
 import os
 import sys
@@ -7,13 +19,19 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '1.4'
+_version = '1.5'
 _description = 'FMI++ Python Interface'
 _url = 'http://fmipp.sourceforge.net'
 _maintainer = 'Edmund Widl'
 _maintainer_email = 'edmund.widl@ait.ac.at'
 _license = 'BSD license & BOOST software license'
-_keywords = [ 'FMI', 'Functional Mock-up Interface', 'FMI++ Library' ]
+
+_keywords = [
+  'FMI',
+  'Functional Mock-up Interface',
+  'FMI++ Library',
+]
+
 _classifiers = [
   'Development Status :: 5 - Production/Stable',
   'Intended Audience :: Science/Research',
@@ -24,17 +42,22 @@ _classifiers = [
   'Programming Language :: Python :: 3.7',
   'Programming Language :: C++',
 ]
-_packages = ['fmipp', 'fmipp.export']
+
+_packages = [
+  'fmipp',
+  'fmipp.export'
+]
 
 # Read long description from file (reStructuredText syntax). Will be parsed and displayed as HTML online.
-with open( 'description.txt' ) as file: _long_description = file.read()
+with open( 'description.txt' ) as description_file:
+  _long_description = description_file.read()
 
 
 
-#
-# Setup for binary wheels (Windows).
-#
-def create_windows_wheel( install_platform ):
+def create_windows_wheel():
+  '''
+  Setup for binary wheels (Windows).
+  '''
 
   # Load setuptools package.
   from setuptools import setup
@@ -82,10 +105,11 @@ def create_windows_wheel( install_platform ):
   )
 
 
-#
-# Setup for source distribution packages (Linux).
-#
+
 def create_source_distribution( fmu_bin_ext, install_platform ):
+  '''
+  Setup for source distribution packages (Linux).
+  '''
 
   # Load distutils package.
   from distutils.core import setup
@@ -107,30 +131,7 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     ( 'FMU_BIN_EXT', fmu_bin_ext ),
     ( 'FRONT_END_TYPE', 'FMIComponentFrontEnd' ),
     ( 'FRONT_END_TYPE_INCLUDE', '\"export/include/FMIComponentFrontEnd.h\"' ),
-    ( 'FMU_URI_PRE', '\"\"' ),
     ( 'USE_SUNDIALS', None ),
-    ( 'SWIGPYTHON', None ),
-  ]
-
-  # Specify sources.
-  export_functions_src = [
-    'source/fmipp/export/functions/fmi_v1.0/fmiFunctions.cpp',
-    'source/fmipp/export/functions/fmi_v2.0/fmi2Functions.cpp'
-  ]
-
-  export_src = [
-    'source/fmipp/export/src/BackEndApplicationBase.cpp',
-    'source/fmipp/export/src/FMIComponentBackEnd.cpp',
-    'source/fmipp/export/src/FMIComponentFrontEnd.cpp',
-    'source/fmipp/export/src/FMIComponentFrontEndBase.cpp',
-    'source/fmipp/export/src/HelperFunctions.cpp',
-    'source/fmipp/export/src/IPCLogger.cpp',
-    'source/fmipp/export/src/IPCMasterLogger.cpp',
-    'source/fmipp/export/src/IPCSlaveLogger.cpp',
-    'source/fmipp/export/src/ScalarVariable.cpp',
-    'source/fmipp/export/src/SHMManager.cpp',
-    'source/fmipp/export/src/SHMMaster.cpp',
-    'source/fmipp/export/src/SHMSlave.cpp',
   ]
 
   import_base_src = [
@@ -161,7 +162,22 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     'source/fmipp/import/utility/src/VariableStepSizeFMU.cpp'
   ]
 
-  all_src = export_functions_src + export_src + import_base_src + import_integrators_src + import_utility_src
+  export_src = [
+    'source/fmipp/export/src/BackEndApplicationBase.cpp',
+    'source/fmipp/export/src/FMIComponentBackEnd.cpp',
+    'source/fmipp/export/src/FMIComponentFrontEnd.cpp',
+    'source/fmipp/export/src/FMIComponentFrontEndBase.cpp',
+    'source/fmipp/export/src/HelperFunctions.cpp',
+    'source/fmipp/export/src/IPCLogger.cpp',
+    'source/fmipp/export/src/IPCMasterLogger.cpp',
+    'source/fmipp/export/src/IPCSlaveLogger.cpp',
+    'source/fmipp/export/src/ScalarVariable.cpp',
+    'source/fmipp/export/src/SHMManager.cpp',
+    'source/fmipp/export/src/SHMMaster.cpp',
+    'source/fmipp/export/src/SHMSlave.cpp',
+    'source/fmipp/import/base/src/ModelDescription.cpp',
+    'source/fmipp/import/base/src/PathFromUrl.cpp',
+  ]
 
   libfmippex_swig = [
     'source/fmipp/export/swig/libfmippex.i'
@@ -201,12 +217,6 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     os.path.join( os.path.dirname( __file__ ), 'source', 'fmipp' )
   ]
 
-  # library_dir = [
-  #   os.path.join( os.path.dirname( __file__ ), 'fmipp', 'lib' ),
-  #   os.path.join( os.path.dirname( __file__ ), 'fmipp', 'export' ),
-  #   os.path.join( os.path.dirname( __file__ ), 'fmipp', 'export', 'bin' )
-  # ]
-
   extra_link_args = [
     '-lrt',
     '-lboost_filesystem',
@@ -230,44 +240,18 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     undef_macros = [ 'NDEBUG' ],
     extra_compile_args = extra_compile_args,
     extra_link_args = extra_link_args,
-    #runtime_library_dirs = library_dir,
   )
 
   # Define FMI++ export wrapper module.
   export_wrapper = Extension(
     'fmipp/export/_fmippex',
     swig_opts = [ '-c++', '-Isource/fmipp', '-outdir', 'fmipp/export' ],
-    sources = libfmippex_swig + all_src,
+    sources = libfmippex_swig + export_src,
     include_dirs = include_dirs,
     define_macros = macros,
     undef_macros = [ 'NDEBUG' ],
     extra_compile_args = extra_compile_args,
     extra_link_args = extra_link_args,
-    #runtime_library_dirs = library_dir,
-  )
-
-  # Define FMI++ import library module.
-  import_lib = Extension(
-    'fmipp/lib/libfmippim',
-    sources = import_base_src + import_integrators_src + import_utility_src,
-    include_dirs = include_dirs,
-    define_macros = macros,
-    undef_macros = [ 'NDEBUG' ],
-    extra_compile_args = extra_compile_args,
-    extra_link_args = [ '-lrt' ],
-    #runtime_library_dirs = library_dir,
-  )
-  
-  # Define FMI++ export library module.
-  export_lib = Extension(
-    'fmipp/lib/libfmippex',
-    sources = export_src,
-    include_dirs = include_dirs,
-    define_macros = macros,
-    undef_macros = [ 'NDEBUG' ],
-    extra_compile_args = extra_compile_args,
-    extra_link_args = [ '-lrt' ],
-    #runtime_library_dirs = library_dir,
   )
 
   # Define module for FMI 2.0 front-end (FMU export).
@@ -279,7 +263,6 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     undef_macros = [ 'NDEBUG' ],
     extra_compile_args = extra_compile_args,
     extra_link_args = extra_link_args,
-    #runtime_library_dirs = library_dir,
   )
 
   # Define module for FMI 1.0 front-end library (FMU export).
@@ -291,7 +274,6 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     undef_macros = ['NDEBUG'],
     extra_compile_args = extra_compile_args,
     extra_link_args  = [ '-lrt' ],
-    #runtime_library_dirs = library_dir,
   )
 
   # List of additional files.
@@ -321,8 +303,6 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     ext_modules = [
       import_wrapper,
       export_wrapper,
-      import_lib,
-      export_lib,
       fmi2_frontend,
       fmi1_frontend_lib
     ],
@@ -339,11 +319,8 @@ if __name__ == '__main__':
 
   if platform.system()=='Windows':
 
-    # Create binary wheels for Windows. 
-    if '32bit' in platform.architecture():
-      create_windows_wheel( install_platform = 'win32' )
-    else:
-      create_windows_wheel( install_platform = 'win64' )
+    # Create binary wheels for Windows.
+    create_windows_wheel()
 
   elif platform.system()== 'Darwin':
 
