@@ -1,98 +1,103 @@
-1. Windows: building wheels
+Building wheels for Windows
 ===========================
 
-NOTE: By default this build works only on WINDOWS due to setup.py platform settings
+NOTE: By default, this works only on Windows due to platform settings in file *setup.py*.
 
-building requirements for python
---------------------------------
+Requirements for Python
+-----------------------
 
-*  install 'wheel' and 'setuptools' via pip
+* install packages `wheel` and `setuptools` via pip
 
 
-preparing the code
+Building the wheel
 ------------------
 
-*  run the fmipp source code with cmake to build the libraries
+* build the FMI++ library (using CMake and Visual Studio)
 
-*  copy the libraries accordingly to the README.txt files or as below:
-    *  <cmake-folder>\import\swig\fmippim.py              ->  <fmipp-folder>\fmipp\fmippim.py
-    *  <cmake-folder>\export\swig\fmippex.py              ->  <fmipp-folder>\fmipp\export\fmippex.py
-    *  <cmake-folder>\import\swig\Release\_fmippim.pyd    ->  <fmipp-folder>\fmipp\lib\_fmippim.pyd
-    *  <cmake-folder>\import\swig\Release\_fmippex.pyd    ->  <fmipp-folder>\fmipp\lib\_fmippex.pyd
-    *  <cmake-folder>\Release\fmippim.dll                 ->  <fmipp-folder>\lib\fmippim.dll
-    *  <cmake-folder>\Release\fmippex.dll                 ->  <fmipp-folder>\lib\fmippex.dll
-    *  <cmake-folder>\Release\fmi2.dll                    ->  <fmipp-folder>\export\bin\fmi2.dll
-    *  <cmake-folder>\Release\libfmipp_fmu_frontend.lib   ->  <fmipp-folder>\export\bin\libfmipp_fmu_frontend.lib
-    *  <sundials-directory>\sundials_cvode.lib            ->  <fmipp-folder>\lib\sundials_cvode.lib
-    *  <sundials-directory>\sundials_nvecserial.lib       ->  <fmipp-folder>\lib\sundials_nvecserial.lib
-    *  <boost-directory>\boost_filesystem-<version>.lib   ->  <fmipp-folder>\lib\boost_filesystem-<version>.lib
-    *  <boost-directory>\boost_system-<version>.lib       ->  <fmipp-folder>\lib\boost_system-<version>.lib
+* copy the libraries accordingly to the README.txt files or as below:
+  * *\<fmipp-build-dir\>\export\swig\fmippex.py* : copy to  *\<py-fmipp-dir\>\fmipp\export*
+  * *\<fmipp-build-dir\>\import\swig\fmippim.py* : copy to *\<py-fmipp-dir\>\fmipp*
+  * *\<fmipp-build-dir\>\import\swig\Release\_fmippim.pyd* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<fmipp-build-dir\>\import\swig\Release\_fmippex.pyd* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<fmipp-build-dir\>\Release\fmippim.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<fmipp-build-dir\>\Release\fmippex.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<fmipp-build-dir\>\Release\fmi2.dll* : copy to  *\<py-fmipp-dir\>\fmipp\export\bin*
+  * *\<fmipp-build-dir\>\Release\libfmipp_fmu_frontend.lib* : copy to  *\<py-fmipp-dir\>\fmipp\export\bin*
+  * *\<sundials-lib-dir\>\sundials_cvode.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<sundials-lib-dir\>\sundials_nvecserial.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<boost-lib-dir\>\boost_filesystem-<version>.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * *\<boost-lib-dir\>\boost_system-<version>.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
+  * MSVC runtime libraries (e.g., *msvcp140.dll* & *vcruntime.dll*) : copy to  *\<py-fmipp-dir\>\fmipp\lib*
 
-NOTE: the build-win.py file can be used IF adapted accordingly
-
-*  run `python setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>` in the command line, where:
-    * `<X.Y>` is the python version used (e.g. `3.6`)
-    * `<platform_tag>` refers to the platform used (i.e. `win32` or `win_amd64`)
+* run `python setup.py bdist_wheel --python-tag py<X.Y> -p <platform_tag>` in the command line, where:
+  * `<X.Y>` is the python version used (e.g. `3.6`)
+  * `<platform_tag>` refers to the platform used (i.e. `win32` or `win_amd64`)
 
 
 Installation from local
 -----------------------
 
-*  run `python -m pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl` to install the wheel
+* run `pip install path\to\wheel\fmipp-<version>-<pyX.Y>-none-<platform-tag>.whl` to install the wheel
 
 
 
-2. Linux: creating source distribution
-======================================
+Creating source distribution packages for Linux
+===============================================
 
-NOTE: By default this build works only on LINUX due to setup.py platform settings
+NOTE: By default, this works only on Linux due to platform settings in file *setup.py*.
 
-requirements
+Requirements
 ------------
 
-*  make sure to have installed (e.g. via aptitude):
-    *  python (python-dev) (recommended: version 3.5 (or higher))
-    *  swig (swig)
-    *  SUNDIALS (libsundials-serial-dev)
-    *  Boost (libboost-all-dev)
-    *  pip (python-pip)
-    *  git (git)
-*  download the fmipp source code into the 'source'-folder (*./source/fmipp*)
+* make sure to have installed (e.g. via `apt-get` or `aptitude`):
+  * Python (package *python-dev*) (recommended: version 3.5 (or higher))
+  * SWIG (package *swig*)
+  * SUNDIALS (package *libsundials-serial-dev*)
+  * Boost (package *libboost-all-dev*)
+  * pip (package *python-pip*)
+  * git (package *git*)
+* download the FMI++ source code into subfolder *source* (*./source/fmipp*)
 
 
-generating the source distribution
-----------------------------------
+Generating the source distribution package
+------------------------------------------
 
-*  run `python setup.py sdist` in the command line to create the 'fmipp-<version>.tar.gz' source distribution file
+* run `python setup.py sdist` in the command line to create the *fmipp-\<version\>.tar.gz* source distribution file
 
 
 Installation from local
 -----------------------
 
-*  run `python -m pip install /path/to/sdist/fmipp-<version>.tar.gz` to install the source distribution
+* run `pip install /path/to/sdist/fmipp-<version>.tar.gz` to install the source distribution
 
 
 
+Uploading to PyPI
+=================
+
+* install twine via `pip install twine`
+* run `twine upload dist\*`
 
 
-3. Installation from PyPI
-=========================
+
+Installation from PyPI
+======================
 
 Windows
 -------
 
-* run `python -m pip install fmipp`
-    *  it might be nescessary to set the flag `--prefer-binaries` if pip chooses to install not a wheel but source distribution as default
-    *  to redownload the package instead of using a cached version, set the flag `--no-cache-dir`
+* run `pip install fmipp --prefer-binaries`
+* to re-download the package instead of using a cached version, set the flag `--no-cache-dir`
+
 
 Linux
 -----
 
 * Requirements:
-    *  python (python-dev) (recommended: version 3.5 (or higher))
-    *  swig (swig)
-    *  SUNDIALS (libsundials-serial-dev)
-    *  Boost (libboost-all-dev)
-    *  pip (python-pip)
+  * Python (package *python-dev*) (recommended: version 3.5 (or higher))
+  * SWIG (package *swig*)
+  * SUNDIALS (package *libsundials-serial-dev*)
+  * Boost (package *libboost-all-dev*)
+  * pip (package *python-pip*)
 
-* run `python -m pip install fmipp`
+* run `pip install fmipp`
