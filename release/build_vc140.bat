@@ -4,14 +4,22 @@ REM ############################################################################
 
 SET PWD=%CD%
 
-RMDIR %BUILD_DIR% /S /Q
+ECHO Create build directory ...
+
+RMDIR %BUILD_DIR% /S /Q 2> NUL
 MKDIR %BUILD_DIR%
 CD %BUILD_DIR%
 
-%CMAKE_BIN_DIR%\cmake.exe %FMIPP_DIR% -G %CMAKE_TARGET% -DBOOST_INCLUDEDIR=%BOOST_INCLUDE_DIR% -DSWIG_EXECUTABLE=%SWIG_DIR%\swig.exe -DPYTHON_EXECUTABLE=%PYTHON_DIR%\python.exe -DINCLUDE_SUNDIALS=ON -DSUNDIALS_INCLUDEDIR=%SUNDIALS_INCLUDE_DIR% -DSUNDIALS_LIBRARYDIR=%SUNDIALS_LIBRARY_DIR% -DBUILD_SWIG_JAVA=OFF
+ECHO Run CMake ...
+
+%CMAKE_BIN_DIR%\cmake.exe %FMIPP_DIR% -G %CMAKE_TARGET% -DBOOST_INCLUDEDIR=%BOOST_INCLUDE_DIR% -DSWIG_EXECUTABLE=%SWIG_DIR%\swig.exe -DPYTHON_EXECUTABLE=%PYTHON_DIR%\python.exe -DINCLUDE_SUNDIALS=ON -DSUNDIALS_INCLUDEDIR=%SUNDIALS_INCLUDE_DIR% -DSUNDIALS_LIBRARYDIR=%SUNDIALS_LIBRARY_DIR% -DBUILD_SWIG_JAVA=OFF 1> %BUILD_DIR%\cmake.out 2>&1
+
+ECHO Build FMI++ ...
 
 CALL "%VS140COMNTOOLS%vsvars32.bat" 
-msbuild /p:Configuration=Release /verbosity:minimal /nologo fmipp.sln
+msbuild /p:Configuration=Release /verbosity:minimal /nologo fmipp.sln 1> %BUILD_DIR%\msbuild_vs140.out 2>&1
+
+ECHO Run tests ...
 
 %CMAKE_BIN_DIR%\ctest.exe --no-compress-output -C "Release" -T Test || verify > NUL
 
@@ -19,9 +27,11 @@ REM ############################################################################
 REM Copy files
 REM ##################################################################################################
 
+ECHO Copy files ...
+
 REM Clean up.
-DEL "%PY_FMIPP_DIR%\fmipp\lib\*.pyd"
-DEL "%PY_FMIPP_DIR%\fmipp\lib\*.dll"
+DEL "%PY_FMIPP_DIR%\fmipp\lib\*.pyd" 2> NUL
+DEL "%PY_FMIPP_DIR%\fmipp\lib\*.dll" 2> NUL
 
 REM Define path to directory with compiled SWIG Python wrapper for FMI++ library (Release mode).
 SET FMIPPIM_SWIG_DIR=%BUILD_DIR%\import\swig
@@ -62,9 +72,13 @@ REM ############################################################################
 REM Build the wheel.
 REM ##################################################################################################
 
-CD %PY_FMIPP_DIR%
-RMDIR build /S /Q
+ECHO Create wheel ...
 
-%PYTHON_DIR%\python.exe setup.py bdist_wheel --python-tag %PYTHON_TAG% -p %PLATFORM_TAG%
+CD %PY_FMIPP_DIR%
+RMDIR build /S /Q 2> NUL
+
+%PYTHON_DIR%\python.exe setup.py bdist_wheel --python-tag %PYTHON_TAG% -p %PLATFORM_TAG% 1> %BUILD_DIR%\bdist_wheel.out 2>&1
+
+ECHO Done.
 
 CD %PWD%
