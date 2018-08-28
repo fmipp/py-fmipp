@@ -1,9 +1,19 @@
 import pytest
 import os.path
+import platform
 
 import fmipp
 
-def test_FMUModelExchange():
+
+@pytest.fixture
+def zip_command():
+   if platform.system()=='Windows':
+      return '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
+   elif platform.system()== 'Linux':
+      return 'unzip {fmu} -d {dir}'
+
+
+def test_FMUModelExchange( zip_command ):
    work_dir = os.path.split( os.path.abspath( __file__ ) )[0] # define working directory
    model_name = 'zigzag' # define FMU model name
 
@@ -11,7 +21,7 @@ def test_FMUModelExchange():
 
    uri_to_extracted_fmu = fmipp.extractFMU(
       path_to_fmu, work_dir,
-      command = '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
+      command = zip_command
       ) # extract FMU
 
    # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
@@ -71,7 +81,7 @@ def test_FMUModelExchange():
       assert round( x, 3 ) == x_expected[ round( t, 3 ) ]
 
 
-def test_IncrementalFMU():
+def test_IncrementalFMU( zip_command ):
    work_dir = os.path.split( os.path.abspath( __file__ ) )[0] # define working directory
    model_name = 'zigzag' # define FMU model name
 
@@ -82,7 +92,7 @@ def test_IncrementalFMU():
 
    uri_to_extracted_fmu = fmipp.extractFMU(
       path_to_fmu, work_dir,
-      command = '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
+      command = zip_command
       ) # extract FMU
 
    # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
@@ -163,7 +173,7 @@ def test_IncrementalFMU():
       assert round( x, 1 ) == x_expected[ round( time, 1 ) ]
 
 
-def test_FMUExport():
+def test_FMUExport( zip_command ):
    from fmipp.export.createFMU import createFMU
    from FMUExportTest import FMUExportTestClass
 
@@ -192,7 +202,7 @@ def test_FMUExport():
 
    uri_to_extracted_fmu = fmipp.extractFMU(
       path_to_fmu, work_dir,
-      command = '"C:\\Program Files\\7-Zip\\7z.exe" -o{dir} x {fmu}'
+      command = zip_command
       ) # extract FMU
 
    logging_on = False
