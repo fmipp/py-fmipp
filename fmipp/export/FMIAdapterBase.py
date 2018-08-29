@@ -614,7 +614,7 @@ class FMIAdapterBase( ABC ):
 			self._backend.waitForMaster()
 
 			# Make a step.
-			self.doStep( self._backend.getCurrentCommunicationPoint(), self._backend.getCommunicationStepSize )
+			self.doStep( self._backend.getCurrentCommunicationPoint(), self._backend.getCommunicationStepSize() )
 
 			if self._enforceTimeStep is True:
 				# Let's do fixed time steps!
