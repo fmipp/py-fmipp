@@ -1,7 +1,7 @@
 Building wheels for Windows
 ===========================
 
-NOTE: By default, this works only on Windows due to platform settings in file *setup.py*.
+**NOTE**: By default, this works only on Windows due to platform settings in file *setup.py*.
 
 Requirements for Python
 -----------------------
@@ -17,7 +17,7 @@ Building the wheel
 
 * build the FMI++ library (using CMake and Visual Studio)
 
-* copy the libraries accordingly to the README.txt files or as below:
+* copy the libraries (FMI++, Boost, SUNDIALS, MSVC runtime):
   * *\<fmipp-build-dir\>\export\swig\fmippex.py* : copy to  *\<py-fmipp-dir\>\fmipp\export*
   * *\<fmipp-build-dir\>\import\swig\fmippim.py* : copy to *\<py-fmipp-dir\>\fmipp*
   * *\<fmipp-build-dir\>\import\swig\Release\_fmippim.pyd* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
@@ -41,14 +41,16 @@ Building the wheel
 Installation from local
 -----------------------
 
-* run `pip install path\to\wheel\fmipp-<version>-<python_tag>-none-<platform_tag>.whl` to install the wheel
-
+* to install the wheel run:
+```
+        pip install path\to\wheel\fmipp-<version>-<python_tag>-none-<platform_tag>.whl
+```
 
 
 Creating source distribution packages for Linux
 ===============================================
 
-NOTE: By default, this works only on Linux due to platform settings in file *setup.py*.
+**NOTE**: By default, this works only on Linux due to platform settings in file *setup.py*.
 
 Requirements
 ------------
@@ -57,12 +59,13 @@ Requirements
   * Python (package *python-dev*)
   * pip (package *python-pip*)
   * git (package *git*)
-* install package `setuptools` using `pip`
+* install package `setuptools` using `pip`:
 ```
         pip install setuptools
 ```
-* download the FMI++ source code into subfolder *source* (*./source/fmipp*) using `git`
+* download the FMI++ source code into subfolder *source* (*./source/fmipp*) using `git`:
 ```
+        cd source
         git clone https://git.code.sf.net/p/fmipp/code fmipp
 ```
 
@@ -71,8 +74,10 @@ Requirements
 Generating the source distribution package
 ------------------------------------------
 
-* run `python setup.py sdist` in the command line to create the *fmipp-\<version\>.tar.gz* source distribution file
-
+* to create the *fmipp-\<version\>.tar.gz* source distribution file run:
+```
+        python setup.py sdist
+```
 
 Installation from local
 -----------------------
@@ -81,9 +86,10 @@ Installation from local
   * SWIG (package *swig*)
   * SUNDIALS (package *libsundials-serial-dev*)
   * Boost (package *libboost-all-dev*)
-* run `pip install /path/to/sdist/fmipp-<version>.tar.gz` to install the source distribution
-
-
+* to install the source distribution run:
+```
+        pip install /path/to/sdist/fmipp-<version>.tar.gz
+```
 
 Uploading to PyPI
 =================
