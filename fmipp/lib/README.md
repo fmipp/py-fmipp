@@ -9,6 +9,4 @@ The following compiled libraries (release mode) and SWIG-generated wrappers shou
 - fmippex.dll
 - sundials_cvode.dll
 - sundials_nvecserial.dll
-- boost_filesystem-<version>.dll
-- boost_system-<version>.dll
 - Visual Studio runtime libraries (e.g., msvcp140.dll & vcruntime.dll)

@@ -12,16 +12,15 @@ CD %BUILD_DIR%
 
 ECHO Run CMake ...
 
-%CMAKE_BIN_DIR%\cmake.exe %FMIPP_DIR% -G %CMAKE_TARGET% -DBOOST_INCLUDEDIR=%BOOST_INCLUDE_DIR% -DSWIG_EXECUTABLE=%SWIG_DIR%\swig.exe -DPYTHON_EXECUTABLE=%PYTHON_DIR%\python.exe -DINCLUDE_SUNDIALS=ON -DSUNDIALS_INCLUDEDIR=%SUNDIALS_INCLUDE_DIR% -DSUNDIALS_LIBRARYDIR=%SUNDIALS_LIBRARY_DIR% -DBUILD_SWIG_JAVA=OFF 1> %BUILD_DIR%\cmake.out 2>&1
+%CMAKE_BIN_DIR%\cmake.exe %FMIPP_DIR% -G %CMAKE_TARGET% -DCMAKE_CONFIGURATION_TYPES=Release -DBOOST_STATIC_LINKING=ON -DBOOST_INCLUDEDIR=%BOOST_INCLUDE_DIR% -DSWIG_EXECUTABLE=%SWIG_DIR%\swig.exe -DPYTHON_EXECUTABLE=%PYTHON_DIR%\python.exe -DINCLUDE_SUNDIALS=ON -DSUNDIALS_INCLUDEDIR=%SUNDIALS_INCLUDE_DIR% -DSUNDIALS_LIBRARYDIR=%SUNDIALS_LIBRARY_DIR% -DBUILD_SWIG_JAVA=OFF -DBUILD_TESTS=OFF 1> %BUILD_DIR%\cmake.out 2>&1
 
 ECHO Build FMI++ ...
 
 CALL "%VS140COMNTOOLS%vsvars32.bat" 
 msbuild /p:Configuration=Release /verbosity:minimal /nologo fmipp.sln 1> %BUILD_DIR%\msbuild_vs140.out 2>&1
 
-ECHO Run tests ...
-
-%CMAKE_BIN_DIR%\ctest.exe --no-compress-output -C "Release" -T Test || verify > NUL
+REM ECHO Run tests ...
+REM %CMAKE_BIN_DIR%\ctest.exe --no-compress-output -C "Release" -T Test || verify > NUL
 
 REM ##################################################################################################
 REM Copy files
@@ -61,8 +60,8 @@ COPY "%SUNDIALS_LIBRARY_DIR%\sundials_cvode.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 COPY "%SUNDIALS_LIBRARY_DIR%\sundials_nvecserial.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 
 REM Copy Boost libraries.
-COPY "%BOOST_LIBRARY_DIR%\boost_filesystem-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
-COPY "%BOOST_LIBRARY_DIR%\boost_system-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
+REM COPY "%BOOST_LIBRARY_DIR%\boost_filesystem-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
+REM COPY "%BOOST_LIBRARY_DIR%\boost_system-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 
 REM Copy Visual Studio runtime libraries.
 COPY C:\Windows\System32\msvcp140.dll "%PY_FMIPP_DIR%\fmipp\lib"

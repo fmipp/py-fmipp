@@ -19,7 +19,7 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '1.5'
+_version = '1.4.2'
 _description = 'FMI++ Python Interface'
 _url = 'http://fmipp.sourceforge.net'
 _maintainer = 'Edmund Widl'
@@ -81,8 +81,6 @@ def create_windows_wheel():
     'licenses/SUNDIALS_LICENSE.txt',
     'export/bin/fmi2.dll',
     'export/bin/libfmipp_fmu_frontend.lib',
-    'lib/boost_filesystem-vc141-mt-1_64.dll',
-    'lib/boost_system-vc141-mt-1_64.dll'
   ]
 
   # Run setup.
