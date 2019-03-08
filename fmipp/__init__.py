@@ -26,7 +26,7 @@ for s in scripts:
 		if os.path.exists( no_ext + '.py' ):
 			try:
 				imp.load_source( 'fmipp', no_ext + '.py' )
-				#print 'successfully loaded module %s' % mname
+				#print( 'successfully loaded module {}'.format( mname ) )
 			except:
 				print( 'failed loading module %s' % mname )
 				print( sys.exc_info()[0] )
@@ -36,7 +36,7 @@ for s in scripts:
 def licenseInfo():
 	import textwrap
 
-	info1 = 'The FMI++ Python Interface for Windows is based on code from the FMI++ Library and BOOST. Also, it includes compiled libraries implementing the SUNDIALS CVODE integrator.'
+	info1 = 'The FMI++ Python Interface is based on code from the FMI++ Library and BOOST. Also, it includes compiled libraries implementing the SUNDIALS CVODE integrator.'
 	info2 = 'For detailed information on the respective licenses please refer to the license files provided here:'
 
 	width = 65

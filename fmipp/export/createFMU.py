@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------
 
 #
-# This file is used to create FMUs for CoSimulation from TRNSYS deck files.
+# This file is used to create FMUs for Co-Simulation from Python code.
 #
 
 ### Setup for Python 2.
@@ -87,7 +87,7 @@ def createFMU(
         for file_name in optional_files:
             modules.log( '\t{}'.format( file_name ) )
 
-    # Parse TRNSYS deck file to retrieve FMI input and output variable names.
+    # Inspect implementation of FMU back-end to retrieve FMI input and output variable names.
     ( fmi_input_vars, fmi_output_vars, fmi_parameters, fmu_backend_class, fmu_backend_file ) = inspectFMUBackend( fmu_backend, verbose, modules )
 
     try:
