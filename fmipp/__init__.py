@@ -19,9 +19,9 @@ for s in scripts:
 
 	path, fname = os.path.split( s )
 	mname, ext = os.path.splitext( fname )
+	no_ext = os.path.join( path, mname )
 
-	if mname not in [ '__init__' ]:
-		no_ext = os.path.join( path, mname )
+	if mname not in [ '__init__', 'numeric' ]:
 
 		if os.path.exists( no_ext + '.py' ):
 			try:
@@ -29,8 +29,13 @@ for s in scripts:
 				#print( 'successfully loaded module {}'.format( mname ) )
 			except:
 				print( 'failed loading module %s' % mname )
-				print( sys.exc_info()[0] )
-
+				#print( sys.exc_info()[0] )
+	elif mname in [ 'numeric' ]: # Load packages that require numpy.
+		try:
+			import numpy
+			imp.load_source( 'fmipp', no_ext + '.py' )
+		except:
+			print( 'failed loading module %s' % mname )
 
 # Extra info regarding licenses.
 def licenseInfo():
