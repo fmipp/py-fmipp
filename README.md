@@ -3,13 +3,14 @@ Building wheels for Windows
 
 **NOTE**: By default, this works only on Windows due to platform settings in file *setup.py*.
 
-Requirements for Python
------------------------
+Requirements
 
-* install packages `wheel` and `setuptools` using pip:
-```
-        pip install wheel setuptools
-```
+* Visual Studio
+* CMake (currently pyfmipp works only with CMake 3.x)
+* Python: install packages `wheel` and `setuptools` using pip:
+  ```
+          pip install wheel setuptools
+  ```
 
 
 Building the wheel
@@ -29,7 +30,6 @@ Building the wheel
   * *\<sundials-lib-dir\>\sundials_cvode.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
   * *\<sundials-lib-dir\>\sundials_nvecserial.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
   * *\<boost-lib-dir\>\boost_filesystem-<version>.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
-  * *\<boost-lib-dir\>\boost_system-<version>.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
   * MSVC runtime libraries (e.g., *msvcp140.dll* & *vcruntime.dll*) : copy to  *\<py-fmipp-dir\>\fmipp\lib*
 
 * run `python setup.py bdist_wheel --python-tag <python_tag> -p <platform_tag>` in the command line, where:

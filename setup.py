@@ -19,7 +19,7 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '1.5.0'
+_version = '1.5.1'
 _description = 'FMI++ Python Interface'
 _url = 'http://fmipp.sourceforge.net'
 _maintainer = 'Edmund Widl'
@@ -68,20 +68,10 @@ def create_windows_wheel():
     def is_pure( self ):
       return False
 
-  # List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
-  pyfmipp_additional_files = [
-    'lib/_fmippim.pyd',
-    'lib/_fmippex.pyd',
-    'lib/fmippim.dll',
-    'lib/fmippex.dll',
-    'lib/sundials_cvode.lib',
-    'lib/sundials_nvecserial.lib',
-    'licenses/FMIPP_LICENSE.txt',
-    'licenses/BOOST_SOFTWARE_LICENSE.txt',
-    'licenses/SUNDIALS_LICENSE.txt',
-    'export/bin/fmi2.dll',
-    'export/bin/libfmipp_fmu_frontend.lib',
-  ]
+  ## List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
+  #pyfmipp_additional_files = [
+  #  'lib/...',
+  #]
 
   # Run setup.
   setup(
@@ -97,7 +87,7 @@ def create_windows_wheel():
     keywords = _keywords,
     classifiers = _classifiers,
     packages = _packages,
-    package_data = { 'fmipp': pyfmipp_additional_files },
+    #package_data = { 'fmipp': pyfmipp_additional_files },
     include_package_data = True,
     distclass = BinaryDistribution,
   )
