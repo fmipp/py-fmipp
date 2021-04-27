@@ -23,7 +23,7 @@ def fmi2GetModelDescriptionTemplates( verbose, modules ):
 def fmi2addVariabilityAndCausalityToModelDescription( scalar_variable_description, type, is_input, is_parameter, verbose, modules ):
     if ( True is is_parameter ):
         scalar_variable_description = scalar_variable_description.replace( '__CAUSALITY__', 'parameter' )
-        scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'constant' )
+        scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'tunable' )
     elif ( True is is_input and False is is_parameter ):
         scalar_variable_description = scalar_variable_description.replace( '__CAUSALITY__', 'input' )
         if ( 'Real' is type ):

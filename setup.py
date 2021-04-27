@@ -19,7 +19,7 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '1.5.1'
+_version = '1.5.2'
 _description = 'FMI++ Python Interface'
 _url = 'http://fmipp.sourceforge.net'
 _maintainer = 'Edmund Widl'
