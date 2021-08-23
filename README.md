@@ -39,7 +39,9 @@ Building the wheel
 **NOTE**:
 There are batch scripts available in subfolder *release* for automating the build for several configurations (win32/win_amd64, cp27/cp36/cp37).
 
-  
+**NOTE**:
+SUNDIAL version 2.7.0 or less is required.
+
 Installation from local
 -----------------------
 
@@ -86,7 +88,7 @@ Installation from local
 
 * make sure to have installed (e.g. via `apt-get` or `aptitude`):
   * SWIG (package *swig*)
-  * SUNDIALS (package *libsundials-serial-dev*)
+  * SUNDIALS (package *libsundials-serial-dev*, version <=2.7.0)
   * Boost (package *libboost-all-dev*)
 * to install the source distribution run:
 ```
@@ -117,7 +119,7 @@ Linux
 * Requirements: make sure to have installed (e.g. via `apt-get` or `aptitude`):
   * Python (package *python-dev*)
   * SWIG (package *swig*)
-  * SUNDIALS (package *libsundials-serial-dev*)
+  * SUNDIALS (package *libsundials-serial-dev*, version <=2.7.0)
   * Boost (package *libboost-all-dev*)
   * pip (package *python-pip*)
 * run `pip install fmipp`
