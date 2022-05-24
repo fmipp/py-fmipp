@@ -20,9 +20,9 @@ def runFMUBackend( backend_class_file_path, backend_class_name ):
 		spec.loader.exec_module( module )
 	except:
 		import imp
-		
-		module = imp.load_source(backend_class_name, backend_class_file_path)
-		
+
+		module = imp.load_source( backend_class_name, backend_class_file_path )
+
 	# Retrieve class implementing the FMU back-end.
 	backend_class = getattr( module, backend_class_name )
 
