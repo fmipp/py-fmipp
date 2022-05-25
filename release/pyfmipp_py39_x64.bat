@@ -5,13 +5,13 @@ REM Settings.
 REM ##################################################################################################
 
 REM Setting specific to this wheel.
-SET BUILD_DIR=%~dp0\build_py38_x64
+SET BUILD_DIR=%~dp0\build_py39_x64
 SET CMAKE_TARGET="Visual Studio 16 2019"
 SET SUNDIALS_LIBRARY_DIR=C:\Tools\sundials-2.6.0\lib64-msvc-14.2
 SET BOOST_LIBRARY_DIR=C:\Tools\boost_1_72_0\lib64-msvc-14.2
 SET BOOST_VERSION=vc142-mt-x64-1_72
-SET PYTHON_DIR=C:\Python38-x64
-SET PYTHON_TAG=cp38
+SET PYTHON_DIR=C:\Python39-x64
+SET PYTHON_TAG=cp39
 SET PLATFORM_TAG=win_amd64
 
 REM General settings.

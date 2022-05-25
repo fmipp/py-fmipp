@@ -18,7 +18,7 @@ REM General settings.
 SET CMAKE_BIN_DIR=C:\Tools\CMake\bin
 SET PY_FMIPP_DIR=C:\Development\fmipp-dev\py-fmipp
 SET FMIPP_DIR=C:\Development\fmipp-dev\fmipp
-SET SWIG_DIR=C:\Tools\swigwin-3.0.12
+SET SWIG_DIR=C:\Tools\swigwin-4.0.2
 SET BOOST_INCLUDE_DIR=C:\Tools\boost_1_72_0
 SET SUNDIALS_INCLUDE_DIR=C:\Tools\sundials-2.6.0\include
 

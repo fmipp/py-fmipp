@@ -9,6 +9,8 @@ build
 dist
 source/fmipp
 MANIFEST
+release/build_py*
+fmipp.egg-info
 
 # Ignore SWIG Python wrapper and other scripts from FMI++ ...
 fmipp/fmippim.py
@@ -16,3 +18,8 @@ fmipp/export/fmippex.py
 
 # Ignore pyc files.
 *.pyc
+
+# Ignore artefacts from testing.
+*.fmu
+test/zigzag
+test/FMUExportTestCS

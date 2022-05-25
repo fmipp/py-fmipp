@@ -2,6 +2,8 @@ REM ############################################################################
 REM Build FMI++ and Python wrappers.
 REM ##################################################################################################
 
+SETLOCAL
+
 SET PWD=%CD%
 
 ECHO Create build directory ...
@@ -82,3 +84,5 @@ RMDIR build /S /Q 2> NUL
 ECHO Done.
 
 CD %PWD%
+
+ENDLOCAL

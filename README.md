@@ -17,7 +17,7 @@ Building the wheel
 ------------------
 
 * build the FMI++ library (using CMake and Visual Studio)
-  * For Python >= 3.8 use commits starting from [`669f51`](https://sourceforge.net/p/fmipp/code/ci/669f513ec0ceaca33d5e9647e973a4a302fecd09/tree/).
+  * For Python >= 3.8 use commits starting from [`834185`](https://sourceforge.net/p/fmipp/code/ci/83418514117e37b1d5599babbda16d01c354193d//tree/).
 * copy the libraries (FMI++, Boost, SUNDIALS, MSVC runtime):
   * *\<fmipp-build-dir\>\export\swig\fmippex.py* : copy to  *\<py-fmipp-dir\>\fmipp\export*
   * *\<fmipp-build-dir\>\import\swig\fmippim.py* : copy to *\<py-fmipp-dir\>\fmipp*
@@ -40,7 +40,7 @@ Building the wheel
 There are batch scripts available in subfolder *release* for automating the build for several configurations (win32/win_amd64, cp27/cp36/cp37).
 
 **NOTE**:
-SUNDIAL version 2.7.0 or less is required.
+SUNDIALS version 2.7.0 or less is required.
 
 Installation from local
 -----------------------
