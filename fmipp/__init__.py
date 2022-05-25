@@ -3,9 +3,9 @@
 # All rights reserved. See file FMIPP_LICENSE.txt for details.
 # -----------------------------------------------------------------
 
-"""This module provides a Python Interface for the FMI++ Library."""
+'''This module provides a Python interface for the FMI++ Library.'''
 
-import os.path, sys, imp, glob
+import os.path, sys
 
 # Retrieve current path.
 install_dir = os.path.dirname( os.path.abspath( __file__ ) )
@@ -13,29 +13,18 @@ install_dir = os.path.dirname( os.path.abspath( __file__ ) )
 # Add directory containing the SWIG modules and external libraries.
 sys.path.append( os.path.join( install_dir, "lib" ) ) 
 
-# Import additional FMI++ scripts.
-scripts = glob.glob( os.path.join( install_dir, "*.py" ) )
-for s in scripts:
+# Import FMI++ wrapper.
+from .fmippim import *
 
-	path, fname = os.path.split( s )
-	mname, ext = os.path.splitext( fname )
-	no_ext = os.path.join( path, mname )
+# Import utility scripts.
+from .extractFMU import *
+from .pathToURI import *
+from .simplifyModelDescription import *
 
-	if mname not in [ '__init__', 'numeric' ]:
-
-		if os.path.exists( no_ext + '.py' ):
-			try:
-				imp.load_source( 'fmipp', no_ext + '.py' )
-				#print( 'successfully loaded module {}'.format( mname ) )
-			except:
-				print( 'failed loading module %s' % mname )
-				#print( sys.exc_info()[0] )
-	elif mname in [ 'numeric' ]: # Load packages that require numpy.
-		try:
-			import numpy
-			imp.load_source( 'fmipp', no_ext + '.py' )
-		except:
-			print( 'failed loading module %s' % mname )
+try:
+	from .numeric import *
+except Exception as ex:
+	print( ex )
 
 # Extra info regarding licenses.
 def licenseInfo():
