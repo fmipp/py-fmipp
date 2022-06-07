@@ -28,20 +28,20 @@ def test_FMUModelExchange( zip_command ):
    logging_on = False
    stop_before_event = False
    event_search_precision = 1e-10
-   integrator_type = fmipp.bdf
+   integrator_type = fmipp.integratorBDF
    fmu = fmipp.FMUModelExchangeV1(
       uri_to_extracted_fmu, model_name,
       logging_on, stop_before_event, event_search_precision, integrator_type
       )
 
    status = fmu.instantiate( "my_test_model_1" ) # instantiate model
-   assert status == fmipp.fmiOK # check status
+   assert status == fmipp.statusOK # check status
 
    status = fmu.setRealValue( 'k', 1.0 ) # set value of parameter 'k'
-   assert status == fmipp.fmiOK # check status
+   assert status == fmipp.statusOK # check status
 
    status = fmu.initialize() # initialize model
-   assert status == fmipp.fmiOK # check status
+   assert status == fmipp.statusOK # check status
 
    t = 0.0
    stepsize = 0.125
@@ -98,7 +98,7 @@ def test_IncrementalFMU( zip_command ):
    # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
    logging_on = False
    event_search_precision = 1e-7
-   integrator_type = fmipp.bdf
+   integrator_type = fmipp.integratorBDF
    fmu = fmipp.IncrementalFMU(
       uri_to_extracted_fmu, model_name,
       logging_on, event_search_precision, integrator_type
@@ -219,42 +219,42 @@ def test_FMUExport( zip_command ):
    visible = False
    interactive = False
    status = fmu.instantiate( instance_name, start_time, visible, interactive )
-   assert status == fmipp.fmiOK
+   assert status == fmipp.statusOK
 
    stop_time_defined = True
    status = fmu.initialize( start_time, stop_time_defined, stop_time )
-   assert status == fmipp.fmiOK
+   assert status == fmipp.statusOK
 
    time = 0.
    step_size = 1.
 
    new_step = True
    status = fmu.doStep( time, step_size, new_step )
-   assert status == fmipp.fmiOK
+   assert status == fmipp.statusOK
 
    assert 1.1 == fmu.getRealValue( 'or_x' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    assert 4.4 == fmu.getRealValue( 'or_y' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    assert 30 == fmu.getIntegerValue( 'oi_x' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    assert 12 == fmu.getIntegerValue( 'oi_y' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    assert True == fmu.getBooleanValue( 'ob_x' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    assert False == fmu.getBooleanValue( 'ob_y' )
-   assert fmu.getLastStatus() == fmipp.fmiOK
+   assert fmu.getLastStatus() == fmipp.statusOK
 
    # assert 'jkldef' == fmu.getStringValue( 'os_x' )
-   # assert fmu.getLastStatus() == fmipp.fmiOK
+   # assert fmu.getLastStatus() == fmipp.statusOK
 
    # assert 'ghiabc' == fmu.getStringValue( 'os_y' )
-   # assert fmu.getLastStatus() == fmipp.fmiOK
+   # assert fmu.getLastStatus() == fmipp.statusOK
 
 
 def test_FMUExport_debug():

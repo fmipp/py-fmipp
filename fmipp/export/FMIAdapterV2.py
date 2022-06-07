@@ -137,7 +137,7 @@ class FMIAdapterV2( FMIAdapterBase ):
         """
         self._booleanParameterNames = list( parameterNames )
         self._booleanParameterSize = len( self._booleanParameterNames )
-        self._booleanParameters = fmippex.new_int_array( self._booleanParameterSize )
+        self._booleanParameters = fmippex.new_bool_array( self._booleanParameterSize )
 
         # Initialize parameters of type boolean.
         status = self._defineVariables(
@@ -156,7 +156,7 @@ class FMIAdapterV2( FMIAdapterBase ):
         """
         self._booleanInputNames = list( inputVariableNames )
         self._booleanInputSize = len( self._booleanInputNames )
-        self._booleanInputs = fmippex.new_int_array( self._booleanInputSize )
+        self._booleanInputs = fmippex.new_bool_array( self._booleanInputSize )
 
         # Initialize inputs (of type boolean).
         status = self._defineVariables(
@@ -175,7 +175,7 @@ class FMIAdapterV2( FMIAdapterBase ):
         """
         self._booleanOutputNames = list( outputVariableNames )
         self._booleanOutputSize = len( self._booleanOutputNames )
-        self._booleanOutputs = fmippex.new_int_array( self._booleanOutputSize )
+        self._booleanOutputs = fmippex.new_bool_array( self._booleanOutputSize )
 
         # Initialize outputs (of type boolean).
         status = self._defineVariables(
@@ -290,7 +290,7 @@ class FMIAdapterV2( FMIAdapterBase ):
             self._booleanParameterNames, self._booleanParameterSize,
             self._booleanParameters, bool, self._debugBooleanParameterValues,
             self._backend.getBooleanParameters if not self._backend is None else None,
-            fmippex.int_array_getitem )
+            fmippex.bool_array_getitem )
         
         if values is None:
             raise RuntimeError( '[FMIAdapter:getBooleanParameterValues] getBooleanParameterValues not successful' )
@@ -362,7 +362,7 @@ class FMIAdapterV2( FMIAdapterBase ):
             self._booleanInputNames, self._booleanInputSize,
             self._booleanInputs, bool, self._debugBooleanInputValues,
             self._backend.getBooleanInputs if not self._backend is None else None,
-            fmippex.int_array_getitem )
+            fmippex.bool_array_getitem )
         
         if values is None:
             raise RuntimeError( '[FMIAdapter:getBooleanInputValues] getBooleanInputValues not successful' )
@@ -442,7 +442,7 @@ class FMIAdapterV2( FMIAdapterBase ):
         status = self._setValues( self._booleanOutputNames, self._booleanOutputSize,
             self._booleanOutputs, outputValues, self._debugBooleanOutputValues,
             self._backend.setBooleanOutputs if not self._backend is None else None,
-            fmippex.int_array_setitem )
+            fmippex.bool_array_setitem )
 
         if not status is fmippex.fmi2OK:
             raise RuntimeError( '[FMIAdapter:setBooleanOutputValues] setBooleanOutputs not successful' )
