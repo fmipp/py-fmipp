@@ -1,7 +1,7 @@
-# -------------------------------------------------------------------
-# Copyright (c) 2013-2018, AIT Austrian Institute of Technology GmbH.
-# All rights reserved. See file FMIPP_LICENSE for details.
-# -------------------------------------------------------------------
+# -----------------------------------------------------------------
+# Copyright (c) 2022, AIT Austrian Institute of Technology GmbH.
+# All rights reserved. See file FMIPP_LICENSE.txt for details.
+# -----------------------------------------------------------------
 
 import abc
 import warnings

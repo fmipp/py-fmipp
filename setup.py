@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------
+# Copyright (c) 2022, AIT Austrian Institute of Technology GmbH.
+# All rights reserved. See file FMIPP_LICENSE.txt for details.
+# -----------------------------------------------------------------
+
 '''
 Run this script to create binary wheels and source distribution packages for the FMI++ Python Interface.
 

@@ -1,7 +1,7 @@
-# -------------------------------------------------------------------
-# Copyright (c) 2013-2017, AIT Austrian Institute of Technology GmbH.
-# All rights reserved. See file FMIPP_LICENSE for details.
-# -------------------------------------------------------------------
+# -----------------------------------------------------------------
+# Copyright (c) 2022, AIT Austrian Institute of Technology GmbH.
+# All rights reserved. See file FMIPP_LICENSE.txt for details.
+# -----------------------------------------------------------------
 
 # Simplify an FMU's XML model description by removing all scalar variables whose causality is not defined as either 'input' or 'output'. Also remove type definitions that are not related to input or output types.
 def simplifyModelDescription( xmlModelDescription ):
@@ -9,16 +9,16 @@ def simplifyModelDescription( xmlModelDescription ):
 
 	# parse model description and retrieve root element
 	root = et.fromstring( xmlModelDescription )
-	
+
 	# get XML node listing the model variables
 	modelVariables = root.find( "ModelVariables" )
-	
+
 	# get list of all XML nodes representing scalar variables
 	scalars = modelVariables.findall( "./ScalarVariable" )
-	
+
 	# set of declared types of scalar variables that are not removed
 	declaredTypes = set()
-	
+
 	# iterate through all XML nodes representing scalar variables
 	for elem in scalars:
 		# check if node defines attribute 'causality'
@@ -40,16 +40,16 @@ def simplifyModelDescription( xmlModelDescription ):
 
 	# get XML node listing the type definitions
 	typeDefinitions = root.find( "TypeDefinitions" )
-	
+
 	# get list of all XML nodes representing types
 	types = typeDefinitions.findall( "./Type" )
-	
+
 	# iterate through all XML nodes representing types
 	for elem in types:
 		# remove node if the type it declares is not used by remaining scalar variables
 		if elem.attrib['name'] not in declaredTypes:
 			typeDefinitions.remove( elem )
-			
+
 	# return simpified XML model description as string
 	return et.tostring( root )
 
@@ -71,7 +71,7 @@ def simplifyFMU( fmuFileName ):
 	fmuOut = zipfile.ZipFile( tmpFmuFileName, 'w', compression = zipfile.ZIP_DEFLATED )
 
 	try:
-		# access FMU model description		
+		# access FMU model description
 		xmlModelDescription = fmuIn.read( 'modelDescription.xml' )
 
 		# simplify model description
@@ -99,7 +99,7 @@ def simplifyFMU( fmuFileName ):
 		print( '\tCompressed:\t', info.compress_size, 'bytes' )
 		print( '\tUncompressed:\t', info.file_size, 'bytes' )
 		print()
-	
+
 	# close zip archives
 	fmuIn.close()
 	fmuOut.close()
@@ -117,6 +117,6 @@ if __name__ == '__main__':
 		sys.exit()
 
 	fmuFileName = sys.argv[1]
-	
+
 	simplifyFMU( fmuFileName )
 

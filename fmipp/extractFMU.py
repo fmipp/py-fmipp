@@ -1,7 +1,7 @@
-# -------------------------------------------------------------------
-# Copyright (c) 2013-2017, AIT Austrian Institute of Technology GmbH.
-# All rights reserved. See file FMIPP_LICENSE for details.
-# -------------------------------------------------------------------
+# -----------------------------------------------------------------
+# Copyright (c) 2022, AIT Austrian Institute of Technology GmbH.
+# All rights reserved. See file FMIPP_LICENSE.txt for details.
+# -----------------------------------------------------------------
 
 # Extract an FMU.
 def extractFMU( fmuFilePath, outputDirPath, command = None ):
@@ -23,12 +23,12 @@ def extractFMU( fmuFilePath, outputDirPath, command = None ):
 		import urllib.parse as urlparse, urllib.request as urllib
 	except:
 		pass
-	
+
 	try:
 		import urlparse, urllib
 	except:
 		pass
-	
+
 	# Check if specified file is indeed a zip file.
 	if not zipfile.is_zipfile( fmuFilePath ):
 		print( '%s is not a valid ZIP archive' % fmuFilePath )
