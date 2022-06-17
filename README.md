@@ -70,7 +70,7 @@ Requirements
 * download the FMI++ source code into subfolder *source* (*./source/fmipp*) using `git`:
 ```
         cd source
-        git clone https://git.code.sf.net/p/fmipp/code fmipp
+        git clone https://github.com/fmipp/fmipp.git fmipp
 ```
 
 
