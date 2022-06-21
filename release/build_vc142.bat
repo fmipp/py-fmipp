@@ -59,7 +59,8 @@ COPY "%FMIPP_DLL_DIR%\fmi2.dll" "%PY_FMIPP_DIR%\fmipp\export\bin"
 
 REM Copy SUNDIALS libraries.
 COPY "%SUNDIALS_LIBRARY_DIR%\sundials_cvode.dll" "%PY_FMIPP_DIR%\fmipp\lib"
-COPY "%SUNDIALS_LIBRARY_DIR%\sundials_nvecserial.dll" "%PY_FMIPP_DIR%\fmipp\lib"
+REM COPY "%SUNDIALS_LIBRARY_DIR%\sundials_nvecserial.dll" "%PY_FMIPP_DIR%\fmipp\lib"
+REM COPY "%SUNDIALS_LIBRARY_DIR%\sundials_sunlinsoldense.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 
 REM Copy Boost libraries.
 COPY "%BOOST_LIBRARY_DIR%\boost_filesystem-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
