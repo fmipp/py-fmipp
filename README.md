@@ -79,7 +79,7 @@ Generating the source distribution package
 
 * to create the *fmipp-\<version\>.tar.gz* source distribution file run:
 ```
-        python setup.py sdist
+        python3 setup.py sdist
 ```
 
 Installation from local
@@ -91,7 +91,7 @@ Installation from local
   * Boost (package *libboost-all-dev*)
 * to install the source distribution run:
 ```
-        pip install /path/to/sdist/fmipp-<version>.tar.gz
+        python3 -m pip install /path/to/sdist/fmipp-<version>.tar.gz
 ```
 
 Uploading to PyPI
@@ -112,13 +112,13 @@ Windows
 * to re-download the package instead of using a cached version, set the flag `--no-cache-dir`
 
 
-Linux
------
+Linux (Ubuntu 20.04)
+--------------------
 
 * Requirements: make sure to have installed (e.g. via `apt`) the following dependencies
-  * Python (package *python-dev*)
+  * Python (package *python3*)
   * SWIG (package *swig*)
   * SUNDIALS (package *libsundials-serial-dev*, version == 3.1.2)
   * Boost (package *libboost-all-dev*)
-  * pip (package *python-pip*)
+  * pip (package *python3-pip*)
 * run `pip install fmipp`
