@@ -17,7 +17,7 @@ Building the wheel
 ------------------
 
 * build the FMI++ library (using CMake and Visual Studio)
-  * For Python >= 3.8 use commits starting from [`834185`](https://sourceforge.net/p/fmipp/code/ci/83418514117e37b1d5599babbda16d01c354193d//tree/).
+  * use commits starting from [9113d3a](https://github.com/fmipp/fmipp/commit/9113d3af59226bc726ff97f09ed31e4da3f43dce)
 * copy the libraries (FMI++, Boost, SUNDIALS, MSVC runtime):
   * *\<fmipp-build-dir\>\export\swig\fmippex.py* : copy to  *\<py-fmipp-dir\>\fmipp\export*
   * *\<fmipp-build-dir\>\import\swig\fmippim.py* : copy to *\<py-fmipp-dir\>\fmipp*
@@ -28,19 +28,18 @@ Building the wheel
   * *\<fmipp-build-dir\>\Release\fmi2.dll* : copy to  *\<py-fmipp-dir\>\fmipp\export\bin*
   * *\<fmipp-build-dir\>\Release\libfmipp_fmu_frontend.lib* : copy to  *\<py-fmipp-dir\>\fmipp\export\bin*
   * *\<sundials-lib-dir\>\sundials_cvode.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
-  * *\<sundials-lib-dir\>\sundials_nvecserial.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
   * *\<boost-lib-dir\>\boost_filesystem-<version>.dll* : copy to  *\<py-fmipp-dir\>\fmipp\lib*
   * MSVC runtime libraries (e.g., *msvcp140.dll* & *vcruntime.dll*) : copy to  *\<py-fmipp-dir\>\fmipp\lib*
 
 * run `python setup.py bdist_wheel --python-tag <python_tag> -p <platform_tag>` in the command line, where:
-  * `<python_tag>` is the python version used (e.g. `cp37`)
+  * `<python_tag>` is the python version used (e.g. `cp39`)
   * `<platform_tag>` refers to the platform used (i.e. `win32` or `win_amd64`)
 
 **NOTE**:
 There are batch scripts available in subfolder *release* for automating the build for several configurations (win32/win_amd64, cp27/cp36/cp37).
 
 **NOTE**:
-SUNDIALS version 2.7.0 or less is required.
+SUNDIALS version 3.1.2 is required.
 
 Installation from local
 -----------------------
@@ -88,7 +87,7 @@ Installation from local
 
 * make sure to have installed (e.g. via `apt-get` or `aptitude`):
   * SWIG (package *swig*)
-  * SUNDIALS (package *libsundials-serial-dev*, version <=2.7.0)
+  * SUNDIALS (package *libsundials-serial-dev*, version == 3.1.2)
   * Boost (package *libboost-all-dev*)
 * to install the source distribution run:
 ```
@@ -116,10 +115,10 @@ Windows
 Linux
 -----
 
-* Requirements: make sure to have installed (e.g. via `apt-get` or `aptitude`):
+* Requirements: make sure to have installed (e.g. via `apt`) the following dependencies
   * Python (package *python-dev*)
   * SWIG (package *swig*)
-  * SUNDIALS (package *libsundials-serial-dev*, version <=2.7.0)
+  * SUNDIALS (package *libsundials-serial-dev*, version == 3.1.2)
   * Boost (package *libboost-all-dev*)
   * pip (package *python-pip*)
 * run `pip install fmipp`
