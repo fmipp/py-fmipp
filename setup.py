@@ -26,7 +26,7 @@ import sys
 _name = 'fmipp'
 _version = '2.0.0'
 _description = 'FMI++ Python Interface'
-_url = 'http://fmipp.sourceforge.net'
+_url = 'https://github.com/fmipp'
 _maintainer = 'Edmund Widl'
 _maintainer_email = 'edmund.widl@ait.ac.at'
 _license = 'BSD license & BOOST software license'

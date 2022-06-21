@@ -15,11 +15,11 @@ The FMI++ Library provides high-level functionalities that ease the handling and
 This allows FMUs to be integrated more easily, e.g., into fixed time step or discrete event simulations.
 
 .. _FMI++ Python Interface: https://pypi.python.org/pypi?:action=display&name=fmipp
-.. _FMI++ Library: http://fmipp.sourceforge.net
+.. _FMI++ Library: https://github.com/fmipp
 
 This package provides a stand-alone version of the Python interface for the `FMI++ Library`_.
 
-.. _FMI++ Library: http://fmipp.sourceforge.net
+.. _FMI++ Library: https://github.com/fmipp
 
 Documentation
 -------------
@@ -31,7 +31,7 @@ An overview on how to use it can be found `here`_.
 
 More extensive background information can be found in the documentation of the `FMI++ Library`_.
 
-.. _FMI++ Library: http://fmipp.sourceforge.net
+.. _FMI++ Library: https://github.com/fmipp
 
 Installation on Windows
 -----------------------
@@ -43,19 +43,19 @@ Installation on Windows
 ``--prefer-binary`` should guarantee that binary distributions (wheels) are chosen over source distributions for the installation.
 Alternatively ``--only-binary :all:`` can be used instead to force installing from binary distribution.
 
-Installation on Linux
----------------------
+Installation on Linux (Ubuntu 20.04)
+------------------------------------
 
-* make sure to have installed the following prerequisites(e.g. via ``apt-get``, see package names in brackets below):
+* make sure to have installed the following prerequisites(e.g. via ``apt``, see package names in brackets below):
 
-    * python (python-dev) (recommended: version 3.5 (or higher))
-    * pip (python-pip)
-    * distutils (python-setuptools)
+    * python (python3) (recommended: version 3.7 or higher)
+    * pip (python3-pip)
+    * distutils (python3-setuptools)
     * GCC compiler toolchain (build-essential)
     * swig (swig)
-    * SUNDIALS library (libsundials-dev or libsundials-serial-dev)
+    * SUNDIALS library (libsundials-dev)
     * Boost library (libboost-all-dev)
 
 * use ``pip`` to install FMI++ from the PyPI via source distribution::
 
-    $ pip install fmipp
+    $ python3 -m pip install fmipp
