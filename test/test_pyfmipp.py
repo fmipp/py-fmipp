@@ -13,7 +13,7 @@ def zip_command():
       return 'unzip {fmu} -d {dir}'
 
 
-def test_FMUModelExchange( zip_command ):
+def test_FMUModelExchangeV1( zip_command ):
    work_dir = os.path.split( os.path.abspath( __file__ ) )[0] # define working directory
    model_name = 'zigzag' # define FMU model name
 
@@ -35,6 +35,74 @@ def test_FMUModelExchange( zip_command ):
       )
 
    status = fmu.instantiate( "my_test_model_1" ) # instantiate model
+   assert status == fmipp.statusOK # check status
+
+   status = fmu.setRealValue( 'k', 1.0 ) # set value of parameter 'k'
+   assert status == fmipp.statusOK # check status
+
+   status = fmu.initialize() # initialize model
+   assert status == fmipp.statusOK # check status
+
+   t = 0.0
+   stepsize = 0.125
+   tstop = 3.0
+
+   x_expected = {
+      0.125 : 0.125,
+      0.250 : 0.250,
+      0.375 : 0.375,
+      0.500 : 0.500,
+      0.625 : 0.625,
+      0.750 : 0.750,
+      0.875 : 0.875,
+      1.000 : 1.000,
+      1.000 : 1.000,
+      1.125 : 0.875,
+      1.250 : 0.750,
+      1.375 : 0.625,
+      1.500 : 0.500,
+      1.625 : 0.375,
+      1.750 : 0.250,
+      1.875 : 0.125,
+      2.000 : 0.000,
+      2.125 : -0.125,
+      2.250 : -0.250,
+      2.375 : -0.375,
+      2.500 : -0.500,
+      2.625 : -0.625,
+      2.750 : -0.750,
+      2.875 : -0.875,
+      3.000 : -1.000,
+      }
+
+   while ( ( t + stepsize ) - tstop < 1e-6 ):
+      t = fmu.integrate( t + stepsize ) # integrate model
+      x = fmu.getRealValue( "x" ) # retrieve output variable 'x'
+      assert round( x, 3 ) == x_expected[ round( t, 3 ) ]
+
+
+def test_FMUModelExchangeV2( zip_command ):
+   work_dir = os.path.split( os.path.abspath( __file__ ) )[0] # define working directory
+   model_name = 'zigzag2' # define FMU model name
+
+   path_to_fmu = os.path.join( work_dir, model_name + '.fmu' ) # path to FMU
+
+   uri_to_extracted_fmu = fmipp.extractFMU(
+      path_to_fmu, work_dir,
+      command = zip_command
+      ) # extract FMU
+
+   # create FMI++ wrapper for FMU for Model Exchange (Version 1.0)
+   logging_on = False
+   stop_before_event = False
+   event_search_precision = 1e-10
+   integrator_type = fmipp.integratorBDF
+   fmu = fmipp.FMUModelExchangeV2(
+      uri_to_extracted_fmu, model_name,
+      logging_on, stop_before_event, event_search_precision, integrator_type
+      )
+
+   status = fmu.instantiate( "my_test_model_2" ) # instantiate model
    assert status == fmipp.statusOK # check status
 
    status = fmu.setRealValue( 'k', 1.0 ) # set value of parameter 'k'
