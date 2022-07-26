@@ -38,6 +38,7 @@ The tutorial's demos are also available as `Code Ocean compute capsule <https://
    :maxdepth: 2
    :caption: Getting Started
 
+   /getting-started/installation
    /getting-started/loading
    /getting-started/model-exchange
    /getting-started/co-simulation
