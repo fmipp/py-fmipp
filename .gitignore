@@ -24,3 +24,6 @@ fmipp/export/fmippex.py
 test/zigzag
 test/zigzag2
 test/FMUExportTestCS
+
+# Ignore artefacts from documentation
+doc/_build
