@@ -24,9 +24,9 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '2.0.0'
+_version = '2.0.1'
 _description = 'FMI++ Python Interface'
-_url = 'https://github.com/fmipp'
+_url = 'https://fmipp.readthedocs.io/projects/py-fmipp'
 _maintainer = 'Edmund Widl'
 _maintainer_email = 'edmund.widl@ait.ac.at'
 _license = 'BSD license & BOOST software license'
@@ -44,7 +44,7 @@ _classifiers = [
   'Operating System :: POSIX :: Linux',
   'Topic :: Scientific/Engineering',
   'Programming Language :: Python :: 2.7',
-  'Programming Language :: Python :: 3.7',
+  'Programming Language :: Python :: 3.10',
   'Programming Language :: C++',
 ]
 

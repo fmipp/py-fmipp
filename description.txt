@@ -27,7 +27,7 @@ Documentation
 The FMI++ Python Interface provides several classes that allow to manipulate FMUs for ModelExchange and for Co-Simulation.
 An overview on how to use it can be found `here`_.
 
-.. _here: http://pythonhosted.org/fmipp/
+.. _here: https://fmipp.readthedocs.io/projects/py-fmipp
 
 More extensive background information can be found in the documentation of the `FMI++ Library`_.
 
@@ -36,7 +36,7 @@ More extensive background information can be found in the documentation of the `
 Installation on Windows
 -----------------------
 
-* use ``pip`` to install FMI++ from the PyPI as pre-compiled binary package (Python wheel)::
+* use ``pip`` to install the FMI++ Python Interface from the PyPI as pre-compiled binary package (Python wheel)::
 
     $ pip install fmipp --prefer-binary
 
@@ -56,6 +56,6 @@ Installation on Linux (Ubuntu 20.04)
     * SUNDIALS library (libsundials-dev)
     * Boost library (libboost-all-dev)
 
-* use ``pip`` to install FMI++ from the PyPI via source distribution::
+* use ``pip`` to install the FMI++ Python Interface from the PyPI via source distribution::
 
     $ python3 -m pip install fmipp
