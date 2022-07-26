@@ -12,7 +12,7 @@ try:
 
     def getDerivatives( fmu_me ):
         '''
-        Extract the derivatoves matrix (as numpy.array) from an FMU for ModelExchange (FMI v1.0 or FMI 2.0).
+        Extract the derivatives matrix (as numpy.array) from an FMU for ModelExchange (FMI v1.0 or FMI 2.0).
         '''
 
         if not isinstance( fmu_me, FMUModelExchangeV1 ) and not isinstance( fmu_me, FMUModelExchangeV2 ):
