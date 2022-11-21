@@ -70,6 +70,7 @@ Requirements
 ```
         cd source
         git clone https://github.com/fmipp/fmipp.git fmipp
+        rm -rf fmipp/.git
 ```
 
 
