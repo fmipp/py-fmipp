@@ -17,7 +17,7 @@ Building the wheel
 ------------------
 
 * build the FMI++ library (using CMake and Visual Studio)
-  * use commits starting from [9113d3a](https://github.com/fmipp/fmipp/commit/9113d3af59226bc726ff97f09ed31e4da3f43dce)
+  * use commits starting from [10b4dbe](https://github.com/fmipp/fmipp/tree/10b4dbe5162f37440b1c2b59aab080db92b6a7db)
 * copy the libraries (FMI++, Boost, SUNDIALS, MSVC runtime):
   * *\<fmipp-build-dir\>\export\swig\fmippex.py* : copy to  *\<py-fmipp-dir\>\fmipp\export*
   * *\<fmipp-build-dir\>\import\swig\fmippim.py* : copy to *\<py-fmipp-dir\>\fmipp*

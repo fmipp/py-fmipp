@@ -4,7 +4,7 @@ SETLOCAL
 
 REM General settings.
 SET PY_FMIPP_DIR=C:\Development\fmipp-dev\py-fmipp
-SET PY_FMIPP_VERSION=2.0.0
+SET PY_FMIPP_VERSION=2.0.2
 
 REM Run tests for all versions.
 

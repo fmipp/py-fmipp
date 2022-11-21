@@ -63,7 +63,7 @@ REM COPY "%SUNDIALS_LIBRARY_DIR%\sundials_nvecserial.dll" "%PY_FMIPP_DIR%\fmipp\
 REM COPY "%SUNDIALS_LIBRARY_DIR%\sundials_sunlinsoldense.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 
 REM Copy Boost libraries.
-COPY "%BOOST_LIBRARY_DIR%\boost_filesystem-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
+REM COPY "%BOOST_LIBRARY_DIR%\boost_filesystem-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 REM COPY "%BOOST_LIBRARY_DIR%\boost_system-%BOOST_VERSION%.dll" "%PY_FMIPP_DIR%\fmipp\lib"
 
 REM Copy Visual Studio runtime libraries.
