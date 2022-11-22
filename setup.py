@@ -24,7 +24,7 @@ import sys
 #
 
 _name = 'fmipp'
-_version = '2.0.2'
+_version = '2.1.0'
 _description = 'FMI++ Python Interface'
 _url = 'https://fmipp.readthedocs.io/projects/py-fmipp'
 _maintainer = 'Edmund Widl'

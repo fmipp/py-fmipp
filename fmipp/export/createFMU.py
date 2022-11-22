@@ -299,35 +299,43 @@ def createModelDescription(
         verbose,
         modules ):
     # Retrieve templates for different parts of XML model description according to FMI version.
-    ( model_description_header, scalar_variable_node, model_description_footer ) = getModelDescriptionTemplates( fmi_version, verbose, modules )
+    ( model_description_main, scalar_variable_node, scalar_unknown_node ) = getModelDescriptionTemplates( fmi_version, verbose, modules )
 
     # FMI model identifier.
-    model_description_header = model_description_header.replace( '__MODEL_IDENTIFIER__', fmi_model_identifier )
+    model_description_main = model_description_main.replace( '__MODEL_IDENTIFIER__', fmi_model_identifier )
 
     # Model name.
     fmi_model_name = modules.os.path.basename( fmu_backend_file ).split( '.' )[0] # Deck file name with extension.
-    model_description_header = model_description_header.replace( '__MODEL_NAME__', fmi_model_name )
+    model_description_main = model_description_main.replace( '__MODEL_NAME__', fmi_model_name )
 
     # Creation date and time.
-    model_description_header = model_description_header.replace( '__DATE_AND_TIME__', modules.time.strftime( "%Y-%m-%dT%H:%M:%S" ) )
+    model_description_main = model_description_main.replace( '__DATE_AND_TIME__', modules.time.strftime( "%Y-%m-%dT%H:%M:%S" ) )
 
     # Author name.
-    model_description_header = model_description_header.replace( '__USER__', modules.getpass.getuser() )
+    model_description_main = model_description_main.replace( '__USER__', modules.getpass.getuser() )
 
     # GUID.
-    model_description_header = model_description_header.replace( '__GUID__', guid )
+    model_description_main = model_description_main.replace( '__GUID__', guid )
 
     # URI of Python main executable.
     python_exe_uri = modules.urlparse.urljoin( 'file:', modules.urllib.pathname2url( modules.sys.executable ) )
-    model_description_header = model_description_header.replace( '__PYTHON_URI__', python_exe_uri )
+    model_description_main = model_description_main.replace( '__PYTHON_URI__', python_exe_uri )
 
     # Define a string to collect all scalar variable definitions.
     model_description_scalars = ''
+
+    # Define a string to collect all scalar unknown definitions.
+    model_description_unknown_outputs = ''
+    model_description_unknown_initials = ''
+
+    # Scalar variable index.
+    var_index = 0
 
     # Add scalar input variables description. Value references for inputs start with 1.
     input_val_ref = 1
     for type, vars in fmi_input_vars.items():
         for var in vars:
+            var_index += 1
             scalar_variable_description = scalar_variable_node
             scalar_variable_description = addVariabilityAndCausalityToModelDescription( scalar_variable_description, fmi_version, type, True, False, verbose, modules )
             scalar_variable_description = scalar_variable_description.replace( '__VAR_TYPE__', type )
@@ -349,11 +357,16 @@ def createModelDescription(
     output_val_ref = 1001 if ( input_val_ref < 1001 ) else input_val_ref
     for type, vars in fmi_output_vars.items():
         for var in vars:
+            var_index += 1
             scalar_variable_description = scalar_variable_node
             scalar_variable_description = addVariabilityAndCausalityToModelDescription( scalar_variable_description, fmi_version, type, False, False, verbose, modules )
             scalar_variable_description = scalar_variable_description.replace( '__VAR_TYPE__', type )
             scalar_variable_description = scalar_variable_description.replace( '__VAR_NAME__', var )
             scalar_variable_description = scalar_variable_description.replace( '__VAL_REF__', str( output_val_ref ) )
+
+            scalar_variable_unknows = scalar_unknown_node.replace( '__VAR_INDEX__', str( var_index ) )
+            model_description_unknown_outputs += scalar_variable_unknows
+
             if var in start_values:
                 if isinstance( start_values[var], bool ): start_values[var] = int( start_values[var] )
                 start_value_description = ' start=\"' + str( start_values[var] ) + '\"'
@@ -363,6 +376,7 @@ def createModelDescription(
             else:
                 scalar_variable_description = scalar_variable_description.replace( '__START_VALUE__', '' )
                 scalar_variable_description = scalar_variable_description.replace( '__INITIAL__', '' )
+                model_description_unknown_initials += scalar_variable_unknows
             output_val_ref += 1
             # Write scalar variable description to file.
             model_description_scalars += scalar_variable_description;
@@ -371,6 +385,7 @@ def createModelDescription(
     param_val_ref = 2001 if ( output_val_ref < 2001 ) else output_val_ref
     for type, vars in fmi_parameters.items():
         for var in vars:
+            var_index += 1
             scalar_variable_description = scalar_variable_node
             scalar_variable_description = addVariabilityAndCausalityToModelDescription( scalar_variable_description, fmi_version, type, False, True, verbose, modules )
             scalar_variable_description = scalar_variable_description.replace( '__VAR_TYPE__', type )
@@ -389,16 +404,18 @@ def createModelDescription(
             # Write scalar variable description to file.
             model_description_scalars += scalar_variable_description;
 
+    model_description_main = model_description_main.replace( '__MODEL_VARIABLES__', model_description_scalars )
+    model_description_main = model_description_main.replace( '__UNKNOWNS_OUTPUTS__', model_description_unknown_outputs )
+    model_description_main = model_description_main.replace( '__UNKNOWNS_INITIALS__', model_description_unknown_initials )
+
     # Add backend class file and optional files.
-    ( model_description_header, model_description_footer ) = \
-        addOptionalFilesToModelDescription( model_description_header, model_description_footer, optional_files, fmi_version, verbose, modules)
+    model_description_main = \
+        addOptionalFilesToModelDescription( model_description_main, optional_files, fmi_version, verbose, modules)
 
     # Create new XML model description file.
     model_description_name = 'modelDescription.xml'
     model_description = open( model_description_name, 'w' )
-    model_description.write( model_description_header );
-    model_description.write( model_description_scalars );
-    model_description.write( model_description_footer );
+    model_description.write( model_description_main );
     model_description.close()
 
     return model_description_name
@@ -449,11 +466,11 @@ def addBackendClassFileToModelDescription( fmu_backend_class, fmu_backend_file, 
 
 
 # Add optional files to XML model description.
-def addOptionalFilesToModelDescription( header, footer, optional_files, fmi_version, verbose, modules ):
+def addOptionalFilesToModelDescription( model_description, optional_files, fmi_version, verbose, modules ):
     if ( '1' == fmi_version ):
-        return fmi1AddOptionalFilesToModelDescription( optional_files, header, footer, verbose, modules )
+        return fmi1AddOptionalFilesToModelDescription( optional_files, model_description, verbose, modules )
     if ( '2' == fmi_version ):
-        return fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verbose, modules )
+        return fmi2AddOptionalFilesToModelDescription( optional_files, model_description, verbose, modules )
 
 
 # Create DLL for FMU.

@@ -9,31 +9,31 @@
 
 # Get templates for the XML model description depending on the FMI version.
 def fmi2GetModelDescriptionTemplates( verbose, modules ):
-    # Template string for XML model description header.
-    header = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription\n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n\tfmiVersion="2.0"\n\tmodelName="__MODEL_NAME__"\n\tguid="{__GUID__}"\n\tgenerationTool="FMI++ TRNSYS Export Utility"\n\tauthor="__USER__"\n\tgenerationDateAndTime="__DATE_AND_TIME__"\n\tvariableNamingConvention="flat"\n\tnumberOfEventIndicators="0">\n\t<CoSimulation\n\t\tmodelIdentifier="__MODEL_IDENTIFIER__"\n\t\tneedsExecutionTool="true"\n\t\tcanHandleVariableCommunicationStepSize="true"\n\t\tcanNotUseMemoryManagementFunctions="true"\n\t\tcanInterpolateInputs="false"\n\t\tmaxOutputDerivativeOrder="0"\n\t\tcanGetAndSetFMUstate="false"\n\t\tprovidesDirectionalDerivative="false"/>\n\t<VendorAnnotations>\n\t\t<Tool name="FMI++Export">\n\t\t\t<Executable\n\t\t\t\texecutableURI="__PYTHON_URI__"\n\t\t\t\tentryPointURI="fmu://resources/"\n\t\t\t\targuments="run_backend___GUID__.py"\n\t\t\t\tpreArguments=""\n\t\t\t\tpostArguments=""/>__ADDITIONAL_FILES__</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n'
+    # Template string for XML model description.
+    main = '<?xml version="1.0" encoding="UTF-8"?>\n<fmiModelDescription\n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n\tfmiVersion="2.0"\n\tmodelName="__MODEL_NAME__"\n\tguid="{__GUID__}"\n\tgenerationTool="FMI++ TRNSYS Export Utility"\n\tauthor="__USER__"\n\tgenerationDateAndTime="__DATE_AND_TIME__"\n\tvariableNamingConvention="flat"\n\tnumberOfEventIndicators="0">\n\t<CoSimulation\n\t\tmodelIdentifier="__MODEL_IDENTIFIER__"\n\t\tneedsExecutionTool="true"\n\t\tcanHandleVariableCommunicationStepSize="true"\n\t\tcanNotUseMemoryManagementFunctions="true"\n\t\tcanInterpolateInputs="false"\n\t\tmaxOutputDerivativeOrder="0"\n\t\tcanGetAndSetFMUstate="false"\n\t\tprovidesDirectionalDerivative="false"/>\n\t<VendorAnnotations>\n\t\t<Tool name="FMI++Export">\n\t\t\t<Executable\n\t\t\t\texecutableURI="__PYTHON_URI__"\n\t\t\t\tentryPointURI="fmu://resources/"\n\t\t\t\targuments="run_backend___GUID__.py"\n\t\t\t\tpreArguments=""\n\t\t\t\tpostArguments=""/>__ADDITIONAL_FILES__</Tool>\n\t</VendorAnnotations>\n\t<ModelVariables>\n__MODEL_VARIABLES__\t</ModelVariables>\n\t<ModelStructure>\n\t\t<Outputs>\n__UNKNOWNS_OUTPUTS__\t\t</Outputs>\n\t\t<InitialUnknowns>\n__UNKNOWNS_INITIALS__\t\t</InitialUnknowns>\n\t</ModelStructure>\n</fmiModelDescription>'
 
     # Template string for XML model description of scalar variables.
     scalar_variable_node = '\t\t<ScalarVariable name="__VAR_NAME__" valueReference="__VAL_REF__" variability="__VARIABILITY__" causality="__CAUSALITY__" __INITIAL__>\n\t\t\t<__VAR_TYPE____START_VALUE__/>\n\t\t</ScalarVariable>\n'
 
-    # Template string for XML model description footer.
-    footer = '\t</ModelVariables>\n\t<ModelStructure/>\n</fmiModelDescription>'
+    # Template string for XML model description of scalar unknown.
+    scalar_unknown_node = '\t\t\t<Unknown index="__VAR_INDEX__"/>\n'
 
-    return ( header, scalar_variable_node, footer )
+    return ( main, scalar_variable_node, scalar_unknown_node )
 
 
 def fmi2addVariabilityAndCausalityToModelDescription( scalar_variable_description, type, is_input, is_parameter, verbose, modules ):
-    if ( True is is_parameter ):
+    if ( True == is_parameter ):
         scalar_variable_description = scalar_variable_description.replace( '__CAUSALITY__', 'parameter' )
         scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'tunable' )
-    elif ( True is is_input and False is is_parameter ):
+    elif ( True == is_input and False == is_parameter ):
         scalar_variable_description = scalar_variable_description.replace( '__CAUSALITY__', 'input' )
-        if ( 'Real' is type ):
+        if ( 'Real' == type ):
             scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'continuous' )
         else:
             scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'discrete' )
-    elif ( False is is_input and False is is_parameter ):
+    elif ( False == is_input and False == is_parameter ):
         scalar_variable_description = scalar_variable_description.replace( '__CAUSALITY__', 'output' )
-        if ( 'Real' is type ):
+        if ( 'Real' == type ):
             scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'continuous' )
         else:
             scalar_variable_description = scalar_variable_description.replace( '__VARIABILITY__', 'discrete' )
@@ -41,9 +41,9 @@ def fmi2addVariabilityAndCausalityToModelDescription( scalar_variable_descriptio
 
 
 # Add optional files to XML model description.
-def fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verbose, modules ):
+def fmi2AddOptionalFilesToModelDescription( optional_files, model_description, verbose, modules ):
     if ( 0 == len( optional_files ) ):
-        header = header.replace( '__ADDITIONAL_FILES__', '' )
+        model_description = model_description.replace( '__ADDITIONAL_FILES__', '' )
     else:
         additional_files_description = ''
         indent = '\n\t\t'
@@ -53,9 +53,9 @@ def fmi2AddOptionalFilesToModelDescription( optional_files, header, footer, verb
             if ( True == verbose ): modules.log( '[DEBUG] Added additional file to model description: ', modules.os.path.basename( file_name ) )
         additional_files_description += indent
 
-        header = header.replace( '__ADDITIONAL_FILES__', additional_files_description )
+        model_description = model_description.replace( '__ADDITIONAL_FILES__', additional_files_description )
 
-    return ( header, footer )
+    return model_description
 
 
 # Create shared library for FMU.
