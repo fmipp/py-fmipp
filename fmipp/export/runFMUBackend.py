@@ -14,7 +14,7 @@ def runFMUBackend( backend_class_file_path, backend_class_name ):
 	:param backend_class_name: name of class implementing the FMU back-end
 	"""
 	try:
-		import importlib
+		import importlib.util
 
 		# Creating a ModuleSpec instance based on the path to the class file.
 		spec = importlib.util.spec_from_file_location( backend_class_name, backend_class_file_path )
