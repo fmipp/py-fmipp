@@ -95,6 +95,23 @@ Installation from local
         python3 -m pip install /path/to/sdist/fmipp-<version>.tar.gz
 ```
 
+
+Creating manylinux wheels
+=========================
+
+Wheels are built on the PyPA manylinux2014 image (glibc 2.17, GCC 10), so they run on Ubuntu 20.04 and later, Debian 10 and later, and RHEL 7 and later. SUNDIALS 3.1.2 and Boost 1.72 are linked statically into the extensions. glibc and libstdc++ stay dynamic. A manylinux wheel does not need the distribution packages `libsundials-dev` or `libboost-all-dev`.
+
+The build needs Docker and the FMI++ sources as a sibling directory of *py-fmipp* (the layout of this repository). From the repository root:
+
+```
+        docker build -f py-fmipp/release/manylinux/Dockerfile -t fmipp-manylinux py-fmipp/release/manylinux
+        docker run --rm -v "<repo-root>:/io" fmipp-manylinux
+```
+
+Wheels for every CPython 3.10–3.13 present in the image are written to *py-fmipp/dist*. The image checks that the repaired wheels do not depend on `libsundials` or `libboost`, then runs the pytest suite.
+
+For aarch64, build the image with `--build-arg BASE_IMAGE=quay.io/pypa/manylinux2014_aarch64` and run it on an aarch64 host or under emulation.
+
 Uploading to PyPI
 =================
 
@@ -113,13 +130,8 @@ Windows
 * to re-download the package instead of using a cached version, set the flag `--no-cache-dir`
 
 
-Linux (Ubuntu 20.04)
---------------------
+Linux
+-----
 
-* Requirements: make sure to have installed (e.g. via `apt`) the following dependencies
-  * Python (package *python3*)
-  * SWIG (package *swig*)
-  * SUNDIALS (package *libsundials-serial-dev*, version == 3.1.2)
-  * Boost (package *libboost-all-dev*)
-  * pip (package *python3-pip*)
-* run `pip install fmipp`
+* A manylinux wheel does not need `libsundials-dev` or `libboost-all-dev`. Run `pip install fmipp`.
+* Installing from the source distribution instead still needs SWIG, Boost (`libboost-all-dev`), and SUNDIALS 3.1.2 (`libsundials-serial-dev`). Current Ubuntu releases do not ship that SUNDIALS version.
