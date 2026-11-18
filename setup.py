@@ -12,6 +12,9 @@ Create binary wheel on Windows:
 Create source distribution package on Linux:
 > python setup.py sdist
 
+Create a Linux wheel with SUNDIALS and Boost linked statically:
+> SUNDIALS_ROOT=<prefix> BOOST_ROOT=<prefix> python setup.py bdist_wheel
+
 See file README.md for more information.
 '''
 
@@ -59,6 +62,31 @@ with open( 'description.txt' ) as description_file:
 
 
 
+def _static_library( root, lib_name ):
+  '''
+  Return the path of a static library installed under root/lib or root/lib64.
+  '''
+  for subdir in ( 'lib', 'lib64' ):
+    candidate = os.path.join( root, subdir, lib_name )
+    if os.path.isfile( candidate ):
+      return candidate
+  raise RuntimeError(
+    'Static library %s not found under %s/lib or %s/lib64.' % ( lib_name, root, root )
+  )
+
+
+
+def _binary_distribution():
+  from setuptools.dist import Distribution
+
+  class _BinaryDistribution( Distribution ):
+    def is_pure( self ):
+      return False
+
+  return _BinaryDistribution
+
+
+
 def create_windows_wheel():
   '''
   Setup for binary wheels (Windows).
@@ -66,12 +94,6 @@ def create_windows_wheel():
 
   # Load setuptools package.
   from setuptools import setup
-  from setuptools.dist import Distribution
-
-  # Base configuration for packaging.
-  class BinaryDistribution( Distribution ):
-    def is_pure( self ):
-      return False
 
   ## List of additional files (i.e., files without the '.py' extension) that are part of the distribution.
   #pyfmipp_additional_files = [
@@ -94,7 +116,7 @@ def create_windows_wheel():
     packages = _packages,
     #package_data = { 'fmipp': pyfmipp_additional_files },
     include_package_data = True,
-    distclass = BinaryDistribution,
+    distclass = _binary_distribution(),
   )
 
 
@@ -104,10 +126,9 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
   Setup for source distribution packages (Linux).
   '''
 
-  # Load distutils package.
-  from distutils.core import setup
-  from distutils.extension import Extension
-  from distutils.command.build import build
+  # setuptools provides bdist_wheel, and distutils is gone on Python 3.12.
+  from setuptools import setup, Extension
+  from setuptools.command.build import build
 
   # Base configuration for packaging.
   class CustomBuild( build ):
@@ -210,18 +231,66 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     os.path.join( os.path.dirname( __file__ ), 'source', 'fmipp' )
   ]
 
-  extra_link_args = [
-    '-lrt',
-    '-lboost_filesystem',
-    '-lboost_system',
-    '-lsundials_cvode',
-    '-lsundials_nvecserial'
-  ]
-
   extra_compile_args = [
     '-g0',
     '-std=c++11'
   ]
+
+  # Static SUNDIALS 3.1.2 and Boost, used by the manylinux wheel. Unset, the
+  # extensions link the system shared libraries so an sdist install is unchanged.
+  sundials_root = os.environ.get( 'SUNDIALS_ROOT', '' )
+  boost_root = os.environ.get( 'BOOST_ROOT', '' )
+  if bool( sundials_root ) != bool( boost_root ):
+    raise RuntimeError( 'Set both SUNDIALS_ROOT and BOOST_ROOT to link them statically, or leave both unset.' )
+
+  fmi1_link_args = [ '-lrt' ]
+
+  if sundials_root and boost_root:
+    include_dirs = [
+      os.path.join( sundials_root, 'include' ),
+      os.path.join( boost_root, 'include' ),
+    ] + include_dirs
+
+    sundials_libs = [
+      _static_library( sundials_root, 'libsundials_sunlinsoldense.a' ),
+      _static_library( sundials_root, 'libsundials_cvode.a' ),
+      _static_library( sundials_root, 'libsundials_sunmatrixdense.a' ),
+      _static_library( sundials_root, 'libsundials_nvecserial.a' ),
+    ]
+    boost_libs = [
+      _static_library( boost_root, 'libboost_filesystem.a' ),
+      _static_library( boost_root, 'libboost_system.a' ),
+    ]
+
+    # -O2 keeps the ODEINT templates in IntegratorStepper.cpp from dominating the wheel.
+    extra_compile_args.append( '-O2' )
+    extra_link_args = [
+      '-Wl,--start-group',
+    ] + sundials_libs + boost_libs + [
+      '-Wl,--end-group',
+      '-Wl,--exclude-libs,ALL',
+      '-lm',
+      '-lrt',
+      '-ldl',
+      '-lpthread',
+    ]
+    # The FMI 1.0 front end calls Boost.Filesystem and does not call SUNDIALS.
+    fmi1_link_args = [
+      '-Wl,--start-group',
+    ] + boost_libs + [
+      '-Wl,--end-group',
+      '-Wl,--exclude-libs,ALL',
+      '-lrt',
+      '-lpthread',
+    ]
+  else:
+    extra_link_args = [
+      '-lrt',
+      '-lboost_filesystem',
+      '-lboost_system',
+      '-lsundials_cvode',
+      '-lsundials_nvecserial'
+    ]
 
   # Define FMI++ import wrapper module.
   import_wrapper = Extension(
@@ -266,7 +335,7 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     define_macros = macros,
     undef_macros = ['NDEBUG'],
     extra_compile_args = extra_compile_args,
-    extra_link_args  = [ '-lrt' ],
+    extra_link_args = fmi1_link_args,
   )
 
   # List of additional files.
@@ -275,6 +344,11 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
     'licenses/BOOST_SOFTWARE_LICENSE.txt',
     'licenses/SUNDIALS_LICENSE.txt',
   ]
+
+  # A wheel must be tagged with the platform. An sdist stays a source distribution.
+  setup_kwargs = {}
+  if 'bdist_wheel' in sys.argv:
+    setup_kwargs['distclass'] = _binary_distribution()
 
   # Run setup.
   setup(
@@ -299,6 +373,7 @@ def create_source_distribution( fmu_bin_ext, install_platform ):
       fmi2_frontend,
       fmi1_frontend_lib
     ],
+    **setup_kwargs
   )
 
 
